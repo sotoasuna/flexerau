@@ -1,0 +1,8 @@
+Confidential/Unpublished source code for workflow-integration © 2019 Flexera Software LLC 
+
+Flexera hereby grants permission to its customers and their affiliates, free of charge, to utilize this software and any associated documentation files (the "Software") for their own internal use and benefit only, including without limitation the rights to use, copy, and internally distribute the Software, subject to the following conditions:
+
+The Software is and shall be kept confidential and may not be disclosed to any other parties without the written consent of Flexera and should only be disclosed to those within your organization on a need to know basis.  
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
