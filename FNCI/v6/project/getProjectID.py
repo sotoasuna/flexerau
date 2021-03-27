@@ -31,25 +31,30 @@ def get_project_id(teamName, projectName, authToken):
         logger.debug(response)
         logger.debug(response.text)
         return  "FAILURE"
-
+    
     # Now parse the results from the REST call
-    if "projectId" in response.json()["Content"]: 
-        # The project ID was returned
-        projectId = (response.json()["Content"]["projectId"])
-        logger.debug("     Project ID for %s is %s" %(projectName, projectId))
-
-        return projectId
-
-    elif "Error: " in response.json():
+    if "HttpStatusCode" in response.json():
+        HttpStatusCode = (response.json()["HttpStatusCode"]) 
         
-        # Check the error message
-        if  "The project name entered was not found" in response.json()["Error: "]:
-            #  If it is already there should we just get the ID and return it??
-            logger.info("The project name %s is not an existing project." %projectName)
-            return  False
+        if  HttpStatusCode == 200:
+            
+            projectId = (response.json()["Content"]["projectId"])
+            logger.debug("     Project ID for %s is %s" %(projectName, projectId))
+            return projectId
+        
+        elif HttpStatusCode == 400:
+            
+                    # Check the error message
+            if  "Sorry, we could not find a Project named" in response.json()["Message"]:
+                #  If it is already there should we just get the ID and return it??
+                logger.info("The project name %s is not an existing project." %projectName)
+                return "No Matching Project Found"
         
         else:
-            # Lots of different errors are possible          
-            logger.error("Unknown Error: %s" %response.json()["Error: "])
-            print("Unknown Error.  Please see log for details.....")         
+            # Unknown status code that needs to be investigated
+            logger.error("Unknown HttpStatusCode: %s" %response.json()["Error: "])
+            print("Unknown Error.  Please see log for details.....")   
+            
+            
+
       

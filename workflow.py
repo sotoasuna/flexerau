@@ -40,17 +40,31 @@ def main():
     
     # get the project ID for the project
     projectID = FNCI.v7.projects.getProjectID.get_project_id(projectName, authToken)
-    print(projectID)
+    print("v7 ProjectID is %s" %projectID) 
     
     # This is circular but in case we need to cycle via IDs
     
     projectName = FNCI.v7.projects.getProjectInventory.get_project_name_by_id(projectID, authToken)
-    print(projectName)
+    print("Project name is %s" %projectName)
     
     # get v6 project ID from the v7 project name
     
     v6_projectID = FNCI.v6.project.getProjectID.get_project_id(config.v6_teamName, projectName, v6_authToken)
-    print(v6_projectID) 
+    
+    if v6_projectID == "No Matching Project Found":
+        print("Logic to create a project to match the v7 project required")
+        
+        '''
+            Copy a baseline project that has all of the workflow configuration already in place
+            
+                which one is needed?   with our without configuration?
+            
+                /project/copyProjectWithConfiguration/{sourceProjectName}/{groupName}/{destinationProjectName}
+                /project/customProjectCopy/{sourceProjectName}/{groupName}/{destinationProjectName}
+              
+        '''
+    else:
+        print("v6 ProjectID is %s" %v6_projectID) 
   
 #------------------------------------------------------------------#
 
