@@ -15,6 +15,7 @@ logger = logging.getLogger(__name__)
 
 INVENTORY_ENDPOINT_URL = config.BASEURL + "project/inventory/"
 
+#--------------------------------------------------------------------#
 def get_project_inventory(projectID, authToken):
     logger.info("Entering get_project_inventory")
     
@@ -87,3 +88,4 @@ def get_project_name_by_id(projectID, authToken):
     else:
         logger.error("Unknown data in response")
         return  
+    
