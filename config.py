@@ -22,4 +22,20 @@ INVENTORYITEM_REQUESTS = {}
 INVENTORYITEM_REQUESTS[1]=4  #  jquery.jquery
 INVENTORYITEM_REQUESTS[2]=5  #  jlibpng
 
+'''
 
+    "request": [
+        {
+            "v7_inventoryId": 1,
+            "v6_request": 4,
+            "componentName": "jquery.jquery"
+        }
+        {
+            "v7_inventoryId": 2,
+            "v6_request": 4,
+            "componentName": "jlibpng"
+        }
+    ]
+
+
+'''

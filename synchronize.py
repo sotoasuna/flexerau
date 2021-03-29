@@ -110,7 +110,7 @@ def main():
                 if COMPONENT_MAPPINGS[inventoryId][0] == "":
                     newRequestID = workflow.create_request.create_new_request(taskId, COMPONENT_MAPPINGS[inventoryId])
                 else:
-                    workflow.update_request.get_update_for_existing_request(taskId, COMPONENT_MAPPINGS[inventoryId][0] )
+                    workflow.update_request.get_update_for_existing_request(v6_projectID, taskId, COMPONENT_MAPPINGS[inventoryId][0] )
             else:
                 logger.debug("Inventory item with id %s has no review tasks" %inventoryId)
                 

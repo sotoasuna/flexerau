@@ -54,17 +54,21 @@ def update_task(taskId, UPDATEINFORMATION, authToken):
 #--------------------------------------------------------# 
 def get_taskUpdateBody(UPDATEINFORMATION): 
     
-    workflow_requestId = UPDATEINFORMATION[0] 
-    updateDate = UPDATEINFORMATION[1] 
-    currentReviewLevelName = UPDATEINFORMATION[2]
-    currentAssigneeName = UPDATEINFORMATION[3] 
+
     
+    requestURL = UPDATEINFORMATION[0]
+    workflow_requestId = UPDATEINFORMATION[1] 
+    updateDate = UPDATEINFORMATION[2] 
+    currentReviewLevelName = UPDATEINFORMATION[3]
+    currentAssigneeName = UPDATEINFORMATION[4] 
+      
+    requestURLText = "Request URL: " + requestURL + "<br>"
     currentRequestIdText = "RequestID: " + str(workflow_requestId) + "<br>"
     lastUpdateText = "Last Activity: " + updateDate + "<br>"
     currentReviewLevelText = "Current Review Level: :  " + currentReviewLevelName + "<br>"
     currentAssigneeText = "Current Assignee:  " + currentAssigneeName
     
-    updateText = currentRequestIdText + lastUpdateText + currentReviewLevelText + currentAssigneeText
+    updateText = requestURLText + currentRequestIdText + lastUpdateText + currentReviewLevelText + currentAssigneeText
     
 
     taskUpdateBody = '''{ 
