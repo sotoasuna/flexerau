@@ -6,6 +6,7 @@ Created on Sep 14, 2019
 
 import sys
 import logging
+from sphinx.ext.todo import Todo
 
 
 ###################################################################################
@@ -44,24 +45,35 @@ def main():
     projectID = FNCI.v7.projects.getProjectID.get_project_id(projectName, authToken)
     print("v7 ProjectID is %s" %projectID) 
     
+   
     # This is circular but in case we need to cycle via IDs
-    
     projectName = FNCI.v7.projects.getProjectInventory.get_project_name_by_id(projectID, authToken)
+    
+    # This will be needed to create a project in v6 to find the associated ID for project creation
+    projectOwnerEmail = FNCI.v7.projects.getProjectInventory.get_project_owner_email_id(projectID, authToken)
+   
     print("Project name is %s" %projectName)
+    print("Project owner eMail Address is %s" %projectOwnerEmail)
+    
     
     # get v6 project ID from the v7 project name
     v6_projectID = FNCI.v6.project.getProjectID.get_project_id(config.v6_teamName, projectName, v6_authToken)
+    
     
     if v6_projectID == "No Matching Project Found":
         print("Logic to create a project to match the v7 project required")
         
         '''
+        # TODO
+        
             Copy a baseline project that has all of the workflow configuration already in place
             
                 which one is needed?   with our without configuration?
             
                 /project/copyProjectWithConfiguration/{sourceProjectName}/{groupName}/{destinationProjectName}
                 /project/customProjectCopy/{sourceProjectName}/{groupName}/{destinationProjectName}
+                
+                v6_ProjectID is the return value
               
         '''
     else:
@@ -80,7 +92,7 @@ def main():
         selectedLicenseId = inventoryITEM["selectedLicenseId"]
         
         # Use INVENTORYITEM_REQUESTS dict until the item is added to the response
-        # see if the ID has a mappped request in the dictionary
+        # see if the ID has a mapped request in the dictionary
         if inventoryItemId in config.INVENTORYITEM_REQUESTS:
             requestId = config.INVENTORYITEM_REQUESTS[inventoryItemId]
         else:
@@ -103,12 +115,20 @@ def main():
         # We only care about task of type MANUAL_INVENTORY_REVIEWw
         if workflowTaskType == "MANUAL_INVENTORY_REVIEW":
             taskId = task["id"]
+            
             # Find any task mapped to the inventory ID
             if inventoryId in COMPONENT_MAPPINGS.keys():
                 
                 # Does this item have a valid workflow request ID?
                 if COMPONENT_MAPPINGS[inventoryId][0] == "":
-                    newRequestID = workflow.create_request.create_new_request(taskId, COMPONENT_MAPPINGS[inventoryId])
+                    
+                    createdById = task["createdById"]
+                    # Map the created Id value back to an email for v6 to determine the ID
+                    # For now assume it is the same as the project owner
+                    # TODO
+                    requesterEmail = projectOwnerEmail
+                                  
+                    newRequestID = workflow.create_request.create_new_request(v6_projectID, taskId, projectOwnerEmail, requesterEmail, COMPONENT_MAPPINGS[inventoryId])
                 else:
                     workflow.update_request.get_update_for_existing_request(v6_projectID, taskId, COMPONENT_MAPPINGS[inventoryId][0] )
             else:

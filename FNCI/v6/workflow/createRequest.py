@@ -11,7 +11,7 @@ import json
 import config
 
 
-WORKFLOW_ENDPOINT_URL = config.v6_BASEURL + "synchronize/createRequest/"
+WORKFLOW_ENDPOINT_URL = config.v6_BASEURL + "workflow/createRequest/"
 
 
 logger = logging.getLogger(__name__)
@@ -26,7 +26,7 @@ def create_workflow_request(REQUESTDETAILS, authToken):
     headers = {'Content-Type': 'application/json', 'Authorization': authToken}  
     RESTAPI_URL = WORKFLOW_ENDPOINT_URL
     logger.debug("    RESTAPI_URL: %s" %RESTAPI_URL)  
-    response = requests.get(RESTAPI_URL, data=createRequestBody, headers=headers)
+    response = requests.post(RESTAPI_URL, data=createRequestBody, headers=headers)
              
     try:
         logger.debug(json.dumps(response.json(), indent=3))  
@@ -62,32 +62,29 @@ def create_workflow_request(REQUESTDETAILS, authToken):
 def get_createRequestBody(REQUESTDETAILS): 
     
     projectID = REQUESTDETAILS[0]
-    projectName = REQUESTDETAILS[0]
-    requesterId = REQUESTDETAILS[0]
-    ownerId = REQUESTDETAILS[0] 
-    componentIdForTask = REQUESTDETAILS[0]
-    componentVersionIdForTask = REQUESTDETAILS[0]
-    selectedLicenseIdForTask = REQUESTDETAILS[0]
+    requesterId = REQUESTDETAILS[1]
+    ownerId = REQUESTDETAILS[2] 
+    componentIdForTask = REQUESTDETAILS[3]
+    componentVersionIdForTask = REQUESTDETAILS[4]
+    selectedLicenseIdForTask = REQUESTDETAILS[5]
+      
+    createRequestBody = '''    {
+    "versionId": ''' + str(componentVersionIdForTask) + ''',
+    "reviewStatus": "draft",
+    "projectId": ''' + str(projectID) + ''',
+    "requesterId": ''' + str(requesterId) + ''',
+    "ownerId": ''' + str(ownerId) + ''',
+     "component": {
+         "id": ''' + str(componentIdForTask) + '''
+     },
+     "fieldValues": {
 
-    createRequestBody = '''{
-    
-        "versionId": ''' + componentVersionIdForTask + ''',
-        "reviewStatus": "draft",
-        "projectId": ''' + projectID + ''',
-        "requesterId": ''' + requesterId + ''',
-        "ownerId": ''' + ownerId + ''',
-         "component": {
-             "id": ''' + componentIdForTask + '''
-         },
-         "fieldValues": {
 
-         },
-         "license": {
-             "id": ''' + selectedLicenseIdForTask + '''
-         }
-    
+     },
+     "license": {
+         "id": ''' + str(selectedLicenseIdForTask) + '''
+     }
+}'''
      
-        } '''
-        
     return createRequestBody            
             

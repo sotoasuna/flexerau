@@ -6,13 +6,18 @@ Created on Sep 14, 2019
 
 FNCI_HOST = "localhost"
 BASEURL = "http://" + FNCI_HOST + ":8888/codeinsight/api/"
-AUTHTOKEN = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJkZGV2ZWxvcGVyIiwidXNlcklkIjoyLCJpYXQiOjE1Njg0OTI4NTN9.tHOZdQrSXcQo3xC8RpJEEFAn-tG2sPTdu85qZSi4iqgve_uD4U2xXc69NX2-0ob2z6xaRhUSRikVqY6YE51v7A"
+AUTHTOKEN = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJkZGV2ZWxvcGVyIiwidXNlcklkIjo1LCJpYXQiOjE1Njg5NzM1Mzd9.NbI-dI6YPMJIjqpPph0cmzZK7phtSdwVJ0H-fY9q_HS35sZtcSx54wUJShXz5Nz8n7c5QIOrlUMrbpfbAS3IrA"
 
 v6_FNCI_HOST = "smg.flexnetcodeinsight.com"
 v6_BASEURL = "http://" + v6_FNCI_HOST + ":8888/palamida/api/"
 v6_AUTHTOKEN = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkZGV2ZWxvcGVyIiwiaWF0IjoxNTY4NDY4ODUyfQ.MhrYUJTkHCDpTmIGPMK-a1moGuxOUDFZz--uL870dzM"
 v6_teamName = "Engineering"
 
+
+#-------------------------------------------------#
+
+v6_USERIDS = {}
+v6_USERIDS["ddeveloper"] = 2 
 #--------------------------------------------------------------------------#
 #  Dictionary to contain the inventory ID to Workflow Request mappings
 #  until the synchronize ID is added to the inventory JSON response
