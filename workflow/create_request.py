@@ -34,8 +34,8 @@ def create_new_request(v6_projectID, taskId, projectOwnerEmail, requesterEmail, 
     
     # Create request in v6
     requestId = FNCI.v6.workflow.createRequest.create_workflow_request(REQUESTDETAILS, v6_authToken)
-    
-    print(requestId)
+  
+    return requestId
     
     
     

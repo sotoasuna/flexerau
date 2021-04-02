@@ -24,8 +24,8 @@ v6_USERIDS["ddeveloper"] = 2
 #
 INVENTORYITEM_REQUESTS = {}
 # INVENTORYITEM_REQUESTS["inventory item in v7"]  = "request ID in v6"
-INVENTORYITEM_REQUESTS[1]=4  #  jquery.jquery
-INVENTORYITEM_REQUESTS[2]=5  #  jlibpng
+INVENTORYITEM_REQUESTS[3]=23  #  openwrt
+INVENTORYITEM_REQUESTS[5]=24  #  libpng
 
 '''
 

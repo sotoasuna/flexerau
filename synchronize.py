@@ -123,12 +123,15 @@ def main():
                 if COMPONENT_MAPPINGS[inventoryId][0] == "":
                     
                     createdById = task["createdById"]
+                    logger.debug("Task was created by user with ID: %s" %createdById)
                     # Map the created Id value back to an email for v6 to determine the ID
                     # For now assume it is the same as the project owner
                     # TODO
                     requesterEmail = projectOwnerEmail
                                   
                     newRequestID = workflow.create_request.create_new_request(v6_projectID, taskId, projectOwnerEmail, requesterEmail, COMPONENT_MAPPINGS[inventoryId])
+                    print("Request %s created for v7 Inventory Item %s - task %s" %(newRequestID, inventoryId, taskId))
+                    
                 else:
                     workflow.update_request.get_update_for_existing_request(v6_projectID, taskId, COMPONENT_MAPPINGS[inventoryId][0] )
             else:
