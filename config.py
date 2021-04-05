@@ -14,33 +14,10 @@ v6_AUTHTOKEN = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkZGV2ZWxvcGVyIiwiaWF0IjoxNTY4NDY
 v6_teamName = "Engineering"
 
 
-#-------------------------------------------------#
-
-v6_USERIDS = {}
-v6_USERIDS["ddeveloper"] = 2 
 #--------------------------------------------------------------------------#
-#  Dictionary to contain the inventory ID to Workflow Request mappings
-#  until the synchronize ID is added to the inventory JSON response
+#  External file to hold the project/inventory/task/request mappings
+#  This will be replaced when the request ID is returned as part of the
+#  get invetory requset API call in v7
 #
-INVENTORYITEM_REQUESTS = {}
-# INVENTORYITEM_REQUESTS["inventory item in v7"]  = "request ID in v6"
-INVENTORYITEM_REQUESTS[3]=23  #  openwrt
-INVENTORYITEM_REQUESTS[5]=24  #  libpng
+PITR_MAPPINGS_FILE = "requests_mappings.json"
 
-'''
-
-    "request": [
-        {
-            "v7_inventoryId": 1,
-            "v6_request": 4,
-            "componentName": "jquery.jquery"
-        }
-        {
-            "v7_inventoryId": 2,
-            "v6_request": 4,
-            "componentName": "jlibpng"
-        }
-    ]
-
-
-'''
