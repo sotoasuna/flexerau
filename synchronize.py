@@ -100,26 +100,30 @@ def main():
     try:
         PREVIOUS_REQUESTS = json.loads(open(config.PITR_MAPPINGS_FILE).read())
         logger.debug("Opening %s file for request that are currently being tracked" %config.PITR_MAPPINGS_FILE)
+
+        INVENTORYITEM_REQUESTS = {}    
+    
+        for existing_request in PREVIOUS_REQUESTS["requests"]:
+            # For now just focus on the specific project
+            if existing_request["v7_projectId"] == projectID:
+                # Add the entry to the dictionary
+                INVENTORYITEM_REQUESTS[existing_request["v7_inventoryId"]] =  existing_request["v6_request"] 
+    
+            # Make sure to update the file with the current data as well
+            PITR_MAPPINGS['requests'].append({
+                'v7_projectId': existing_request["v7_projectId"],
+                'v7_inventoryId': existing_request["v7_inventoryId"],
+                'v7_taskId': existing_request["v7_taskId"],
+                'v6_request': existing_request["v6_request"]
+                })
+  
+    
+    
     except:
         # The script so far has not run with any tasks to process
         logger.debug("%s file does not exist currently" %config.PITR_MAPPINGS_FILE)
     
-    INVENTORYITEM_REQUESTS = {}    
-    
-    for existing_request in PREVIOUS_REQUESTS["requests"]:
-        # For now just focus on the specific project
-        if existing_request["v7_projectId"] == projectID:
-            # Add the entry to the dictionary
-            INVENTORYITEM_REQUESTS[existing_request["v7_inventoryId"]] =  existing_request["v6_request"] 
 
-        # Make sure to update the file with the current data as well
-        PITR_MAPPINGS['requests'].append({
-            'v7_projectId': existing_request["v7_projectId"],
-            'v7_inventoryId': existing_request["v7_inventoryId"],
-            'v7_taskId': existing_request["v7_taskId"],
-            'v6_request': existing_request["v6_request"]
-            })
-  
     #--------------------------------------------------------------------------#    
     # Create a dictionary containing key information about the inventory item    
     for inventoryITEM in v7_INVENTORY:
@@ -127,17 +131,22 @@ def main():
         componentId = inventoryITEM["componentId"]
         componentVersionId = inventoryITEM["componentVersionId"]
         selectedLicenseId = inventoryITEM["selectedLicenseId"]
+        disclosed = inventoryITEM["disclosed"]
         
-        # Use INVENTORYITEM_REQUESTS dict until the item is added to the response
-        # see if the ID has a mapped request in the dictionary
-        if inventoryItemId in INVENTORYITEM_REQUESTS:
-            requestId = INVENTORYITEM_REQUESTS[inventoryItemId]
+        # was the item disclosed?
+        if disclosed == True:
+        
+            # Use INVENTORYITEM_REQUESTS dict until the item is added to the response
+            # see if the ID has a mapped request in the dictionary
+            if inventoryItemId in INVENTORYITEM_REQUESTS:
+                requestId = INVENTORYITEM_REQUESTS[inventoryItemId]
+            else:
+                requestId = ""  # Assume a blank value is what the response JSON will contain if it does not exist
+                
+            # Is this all we care about from the inventory item itself?           
+            COMPONENT_MAPPINGS[inventoryItemId] = [requestId, componentId, componentVersionId, selectedLicenseId]
         else:
-            requestId = ""  # Assume a blank value is what the response JSON will contain if it does not exist
-            
-        # Is this all we care about from the inventory item itself?           
-        COMPONENT_MAPPINGS[inventoryItemId] = [requestId, componentId, componentVersionId, selectedLicenseId]
-
+            print("This was not disclosed")
     #------------------------------------------------------------------------------------------------------------#
     print("")
     print("Get the project tasks")
@@ -189,6 +198,7 @@ def main():
         json.dump(PITR_MAPPINGS, outfile, indent=3)
 
 
+    print("Script Complete")
 #------------------------------------------------------------------#
 
 
