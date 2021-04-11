@@ -80,14 +80,14 @@ def get_project_name_by_id(projectID, authToken):
         errorKey = response.json()["Key: "]
         errorMessage = response.json()["Error: "]
         
-        print("Error in getting project ID")
-        print("   %s:  %s" %(errorKey, errorMessage))
-        print("")
-        return(False)
+        logger.debug("Error in getting project ID")
+        logger.debug("   %s:  %s" %(errorKey, errorMessage))
+
+        return("False")  # Not sure why I could not return False as boolean
         
     else:
         logger.error("Unknown data in response")
-        return  
+        return("False")  
 
 
 #----------------------------------------------------------------------------#

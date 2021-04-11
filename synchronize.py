@@ -26,7 +26,7 @@ filename="_workflow.log", filemode='w',level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
 import config
-import FNCI.v7.projects.getProjectID
+
 import FNCI.v7.projects.getProjectInventory
 import FNCI.v6.project.getProjectID
 import FNCI.v7.tasks.getTasks
@@ -38,22 +38,36 @@ def main():
     projectName = "Workflow"
     authToken = config.AUTHTOKEN
     v6_authToken = config.v6_AUTHTOKEN
+
+    # Start to cycle through projects in v7 looking for open tasks
+    # For now just the one project we have configured for testing
+    for projectID in range(1,2):   
+        # This is circular but in case we need to cycle via IDs
+        projectName = FNCI.v7.projects.getProjectInventory.get_project_name_by_id(projectID, authToken)
+
+        if projectName != "False":  # if False was not returned from the API call
+            logger.debug("This should not be printed unless it's a good proejct ID")
+            # This will be needed to create a project in v6 to find the associated ID for project creation
+            projectOwnerEmail = FNCI.v7.projects.getProjectInventory.get_project_owner_email_id(projectID, authToken)
+           
+            print("Project name is %s" %projectName)
+            print("Project owner eMail Address is %s" %projectOwnerEmail)
+            
+            # Since this is a valid ID get the associated tasks for the project
+            
+            # Get project Tasks
+            
+            
+            # TODO
+            
+            
+        else:
+            logger.debug("No project has a projectID of %s" %projectID)
+
     
-    
-    # get the project ID for the project
-    projectID = FNCI.v7.projects.getProjectID.get_project_id(projectName, authToken)
-    print("v7 ProjectID is %s" %projectID) 
-    
-   
-    # This is circular but in case we need to cycle via IDs
-    projectName = FNCI.v7.projects.getProjectInventory.get_project_name_by_id(projectID, authToken)
-    
-    # This will be needed to create a project in v6 to find the associated ID for project creation
-    projectOwnerEmail = FNCI.v7.projects.getProjectInventory.get_project_owner_email_id(projectID, authToken)
-   
-    print("Project name is %s" %projectName)
-    print("Project owner eMail Address is %s" %projectOwnerEmail)
-    
+    #------------------------------------------------------------------------
+    # This should only be done if there is an open task for a disclosed item in the v7 project
+    # so it should be moved....
     
     # get v6 project ID from the v7 project name
     v6_projectID = FNCI.v6.project.getProjectID.get_project_id(config.v6_teamName, projectName, v6_authToken)
@@ -79,9 +93,7 @@ def main():
         print("There is a corresponding project of name %s in v6" %projectName)
         print("    v6 ProjectID is %s" %v6_projectID) 
   
-    # Get the full inventory to create a dict of the inventoryid to componentIds
-    COMPONENT_MAPPINGS= {}
-    v7_INVENTORY = FNCI.v7.projects.getProjectInventory.get_project_inventory(projectID, authToken)
+
     
     #--------------------------------------------------------------------------#  
     # Create a dictionary from the JSON data containing the current PITR mappings
@@ -96,12 +108,11 @@ def main():
     PITR_MAPPINGS = {}
     PITR_MAPPINGS["requests"] = []
 
-    
+    # Set up a dictionary to hold a mapping between v7 tasks and v7 workflow
+    INVENTORYITEM_REQUESTS = {}    
     try:
         PREVIOUS_REQUESTS = json.loads(open(config.PITR_MAPPINGS_FILE).read())
         logger.debug("Opening %s file for request that are currently being tracked" %config.PITR_MAPPINGS_FILE)
-
-        INVENTORYITEM_REQUESTS = {}    
     
         for existing_request in PREVIOUS_REQUESTS["requests"]:
             # For now just focus on the specific project
@@ -123,7 +134,9 @@ def main():
         # The script so far has not run with any tasks to process
         logger.debug("%s file does not exist currently" %config.PITR_MAPPINGS_FILE)
     
-
+    # Get the full inventory to create a dict of the inventoryid to componentIds
+    COMPONENT_MAPPINGS= {}
+    v7_INVENTORY = FNCI.v7.projects.getProjectInventory.get_project_inventory(projectID, authToken)
     #--------------------------------------------------------------------------#    
     # Create a dictionary containing key information about the inventory item    
     for inventoryITEM in v7_INVENTORY:
