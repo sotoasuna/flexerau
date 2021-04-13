@@ -46,7 +46,7 @@ def main():
         projectName = FNCI.v7.projects.getProjectInventory.get_project_name_by_id(projectID, authToken)
 
         if projectName != "False":  # if False was not returned from the API call
-            logger.debug("This should not be printed unless it's a good proejct ID")
+            logger.debug("This should not be printed unless it's a good project ID")
             # This will be needed to create a project in v6 to find the associated ID for project creation
             projectOwnerEmail = FNCI.v7.projects.getProjectInventory.get_project_owner_email_id(projectID, authToken)
            
