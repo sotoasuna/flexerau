@@ -25,9 +25,9 @@ def create_new_request(v6_projectID, taskId, projectOwnerEmail, requesterEmail, 
     requesterId = FNCI.v6.project.getUserId.get_user_id_from_email(requesterEmail, v6_authToken)
     
     # Break apart the list for the component/version/license ids
-    componentId = INVENTORYDETAILS[1]
-    componentVersionId = INVENTORYDETAILS[2]
-    selectedLicenseId = INVENTORYDETAILS[3]
+    componentId = INVENTORYDETAILS[0]
+    componentVersionId = INVENTORYDETAILS[1]
+    selectedLicenseId = INVENTORYDETAILS[2]
    
     # Group the data together in a list to pass it to the RESTAPI
     REQUESTDETAILS = [v6_projectID, requesterId, projectOwnerId, componentId, componentVersionId, selectedLicenseId ]

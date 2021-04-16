@@ -19,5 +19,6 @@ v6_teamName = "Engineering"
 #  This will be replaced when the request ID is returned as part of the
 #  get invetory requset API call in v7
 #
-PITR_MAPPINGS_FILE = "requests_mappings.json"
+RTI_MAPPINGS_DIRECTORY = "RTI_DATAFILES/"
+RTI_MAPPINGS_FILE_SUFFIX = "requests_mappings.json"
 

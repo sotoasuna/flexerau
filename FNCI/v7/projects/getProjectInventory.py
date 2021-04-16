@@ -45,11 +45,11 @@ def get_project_inventory(projectID, authToken):
         print("Error in getting project ID")
         print("   %s:  %s" %(errorKey, errorMessage))
         print("")
-        return(False)
+        return "False"
         
     else:
         logger.error("Unknown data in response")
-        return  
+        return "False"  
 
 
 #--------------------------------------------------------------------------#
@@ -83,11 +83,11 @@ def get_project_name_by_id(projectID, authToken):
         logger.debug("Error in getting project ID")
         logger.debug("   %s:  %s" %(errorKey, errorMessage))
 
-        return("False")  # Not sure why I could not return False as boolean
+        return "NoProject"  # Not sure why I could not return False as boolean
         
     else:
         logger.error("Unknown data in response")
-        return("False")  
+        return "NoProject"
 
 
 #----------------------------------------------------------------------------#

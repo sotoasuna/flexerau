@@ -42,6 +42,11 @@ def get_task_by_projectID(projectID, authToken):
         logger.debug("     Task data retrieved for project ID %s" %projectID)
 
         return TASKDATA
+    
+    elif "errors" in response.json():
+        logger.debug(response.json()["errors"])
+        # Return empty list to check len against
+        return []
 
         
     else:
