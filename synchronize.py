@@ -29,6 +29,7 @@ import config
 
 import FNCI.v7.projects.getProjectInventory
 import FNCI.v6.project.getProjectID
+import FNCI.v6.project.copyProjectWithConfiguration
 
 
 import v7_Data.getTaskData
@@ -46,7 +47,7 @@ def main():
 
     # Start to cycle through projects in v7 looking for open tasks
     # For now just the one project we have configured for testing
-    for projectID in range(1,2):
+    for projectID in range(4,5):
 
         #------------------------------------------------------------------------------------------------------#
         projectName = FNCI.v7.projects.getProjectInventory.get_project_name_by_id(projectID, authToken)
@@ -73,21 +74,11 @@ def main():
                 v6_projectID = FNCI.v6.project.getProjectID.get_project_id(config.v6_teamName, projectName, v6_authToken)
                 
                 if v6_projectID == "No Matching Project Found":
-                    print("Logic to create a project to match the v7 project required")
-                    
-                    '''
-                    # TODO
-                    
-                        Copy a baseline project that has all of the workflow configuration already in place
-                        
-                            which one is needed?   with our without configuration?
-                        
-                            /project/copyProjectWithConfiguration/{sourceProjectName}/{groupName}/{destinationProjectName}
-                            /project/customProjectCopy/{sourceProjectName}/{groupName}/{destinationProjectName}
-                            
-                            v6_ProjectID is the return value
-                          
-                    '''
+                    # Since there is no project in v6 one needs to be created                   
+                    v6_projectID = FNCI.v6.project.copyProjectWithConfiguration.create_cloned_project(config.v6_teamName, projectName, v6_authToken)
+                    print("New project %s created in v6" %projectName)
+                    print("    v6 ProjectID is %s" %v6_projectID) 
+
                 else:
                     print("There is a corresponding project of name %s in v6" %projectName)
                     print("    v6 ProjectID is %s" %v6_projectID) 
