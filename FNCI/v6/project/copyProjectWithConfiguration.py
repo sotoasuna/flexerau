@@ -38,7 +38,7 @@ def create_cloned_project(teamName, projectName, authToken):
         
         if  HttpStatusCode == 200:
             
-            projectId = (response.json()["Content"]["Content"])
+            projectId = (response.json()["Content"])
             logger.debug("     Project ID for v6 project %s is %s" %(projectName, projectId))
             return projectId
         

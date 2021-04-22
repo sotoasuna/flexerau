@@ -46,10 +46,10 @@ def get_task_by_projectID(projectID, authToken):
     elif "errors" in response.json():
         logger.debug(response.json()["errors"])
         # Return empty list to check len against
-        return []
+        return {}
 
         
     else:
         # Lots of different errors are possible          
         print("Unknown Error.  Please see log for details.....")         
-      
+        return {}

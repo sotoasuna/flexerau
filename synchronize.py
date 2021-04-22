@@ -47,7 +47,7 @@ def main():
 
     # Start to cycle through projects in v7 looking for open tasks
     # For now just the one project we have configured for testing
-    for projectID in range(4,5):
+    for projectID in range(1,10):
 
         #------------------------------------------------------------------------------------------------------#
         projectName = FNCI.v7.projects.getProjectInventory.get_project_name_by_id(projectID, authToken)
@@ -68,8 +68,8 @@ def main():
             PROJECTTASKDATA = v7_Data.getTaskData.get_v7_task_data(projectID)
 
             # see if there are any tasks to worry about
-            if  PROJECTTASKDATA != None:
-                
+            if PROJECTTASKDATA:
+                print("There are tasks for this project")
                 # See if there is a matching v6 project
                 v6_projectID = FNCI.v6.project.getProjectID.get_project_id(config.v6_teamName, projectName, v6_authToken)
                 
@@ -89,6 +89,7 @@ def main():
               
                 # Cycle though the tasks and get the inventory information for each one
                 for taskId in PROJECTTASKDATA:
+                    logger.debug("Check inventory for task with id %s" %taskId)
                     inventoryId = PROJECTTASKDATA[taskId]
                      
                     # For the task get the details for that project inventory item.
@@ -121,13 +122,19 @@ def main():
                             
                             EXISTING_RTI_MAPPINGS[taskId] = [inventoryId, v6RequestID]
                             logger.debug("taskId %s now has requestId  %s associated with it " %(taskId, v6RequestID))
+                            
+                #--------------------------------------------------------------------------------------------------------------------------------#
+                # Now update the json data file with any new requests that were created.
+                # This will be removed once the inventory has the associated request ID
+                RTI.RTIData.update_RTI_mappings(projectID, EXISTING_RTI_MAPPINGS)
+                
+            else:
+                print("There are no tasks for this project")
+            
 
           
-            #--------------------------------------------------------------------------------------------------------------------------------#
-            # Now update the json data file with any new requests that were created.
-            # This will be removed once the inventory has the associated request ID
-            RTI.RTIData.update_RTI_mappings(projectID, EXISTING_RTI_MAPPINGS)
-            
+
+    print("Script Completed")
      
 if __name__ == "__main__":
     main() 

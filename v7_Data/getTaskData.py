@@ -25,18 +25,20 @@ def get_v7_task_data(projectID):
     
     # Get the task data
     TASKS = FNCI.v7.tasks.getTasks.get_task_by_projectID(projectID, authToken)
-    
-    if len(TASKS) > 0:
+
+    # See if there were any tasks    
+    if TASKS:
         # Cycle through the associated tasks for the project
         for task in TASKS:
             inventoryId = task["inventoryId"]
             workflowTaskType = task["workflowTaskType"]
-    
-            
+               
             # We only care about task of type MANUAL_INVENTORY_REVIEWw
             if workflowTaskType == "MANUAL_INVENTORY_REVIEW":
                 taskId = task["id"]
              
                 PROJECTTASKS[taskId] = inventoryId
-
         return PROJECTTASKS
+    else:
+        logger.debug("No tasks found for project with ID %s" %projectID)
+        return {}
