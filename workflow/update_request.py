@@ -56,10 +56,16 @@ def get_update_for_existing_request(v6_projectID, taskId, workflow_requestId):
             else:
                 # Get the resolution from the request data
                 reviewStatus = (detail["reviewStatus"]).upper()  # Get the status and capitalize it
+                # Get the latest update time            
+                updateDate = detail["updateDate"]
                 
                 # Update task contents as well with approval date and message
-                #UPDATEDETAILS = [requestURL, workflow_requestId, updateDate, currentReviewLevelName, currentReviewer]
+                UPDATEDETAILS = [requestURL, workflow_requestId, reviewStatus + " at " + updateDate, "None", "None"]
+                # Provide an update to the task with the data retrieved from the workflow item
+                FNCI.v7.tasks.updateTask.update_task(taskId, UPDATEDETAILS, authToken)
                 FNCI.v7.tasks.closeTask.close_task_by_projectID(taskId, reviewStatus, authToken)
+                print("    Request %s has been closed with a status of %s" %(workflow_requestId, reviewStatus)) 
+                
         
         else:
             logger.debug("Request %s is still in a draft state" %workflow_requestId)
