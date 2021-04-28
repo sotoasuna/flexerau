@@ -19,7 +19,7 @@ logger = logging.getLogger(__name__)
 def get_update_for_existing_request(v6_projectID, taskId, workflow_requestId):
     logger.debug("Entering get_update_for_existing_request")
     logger.debug("Update the  request for taskId: %s with details from workflow request ID %s" %(taskId, workflow_requestId))
-    print("Update the  request for taskId: %s with details from workflow request ID %s" %(taskId, workflow_requestId))
+    print("    - Update the request for task with ID %s with details from v6 workflow request %s" %(taskId, workflow_requestId))
     
     authToken = config.AUTHTOKEN
     v6_authToken = config.v6_AUTHTOKEN
@@ -46,7 +46,8 @@ def get_update_for_existing_request(v6_projectID, taskId, workflow_requestId):
                 
                 UPDATEDETAILS = [requestURL, workflow_requestId, updateDate, currentReviewLevelName, currentReviewer]
                 
-                print("    Updating v7 task id %s with latest request status of request Id %s" %(taskId, workflow_requestId))
+                print("        -- Updating v7 task id %s with latest request status of request Id %s" %(taskId, workflow_requestId))
+                print("            --- Currently waiting for review by %s" %currentReviewer)
                 logger.debug("Task Update Details: %s" %UPDATEDETAILS)
                  
                 # Provide an update to the task with the data retrieved from the workflow item
@@ -64,12 +65,12 @@ def get_update_for_existing_request(v6_projectID, taskId, workflow_requestId):
                 # Provide an update to the task with the data retrieved from the workflow item
                 FNCI.v7.tasks.updateTask.update_task(taskId, UPDATEDETAILS, authToken)
                 FNCI.v7.tasks.closeTask.close_task_by_projectID(taskId, reviewStatus, authToken)
-                print("    Request %s has been closed with a status of %s" %(workflow_requestId, reviewStatus)) 
+                print("        -- Request %s has been closed with a status of %s" %(workflow_requestId, reviewStatus)) 
                 
         
         else:
             logger.debug("Request %s is still in a draft state" %workflow_requestId)
-            print("    Request %s is still in a draft state" %workflow_requestId)     
+            print("        -- Request %s is currently in a draft state" %workflow_requestId)     
 
 #-----------------------------------------------------------------------#
 

@@ -31,11 +31,12 @@ def get_v7_inventory_data(projectID):
         componentVersionId = inventoryITEM["componentVersionId"]
         selectedLicenseId = inventoryITEM["selectedLicenseId"]
         disclosed = inventoryITEM["disclosed"]
+        componentName = inventoryITEM["name"]
         
         # was the item disclosed?
         if disclosed == True:
             
-            INVENTORYITEMS[inventoryItemId] = [componentId, componentVersionId, selectedLicenseId]
+            INVENTORYITEMS[inventoryItemId] = [componentId, componentVersionId, selectedLicenseId, componentName]
             
     return INVENTORYITEMS
 

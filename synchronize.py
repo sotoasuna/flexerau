@@ -6,7 +6,6 @@ Created on Sep 14, 2019
 
 import sys
 import logging
-import json
 
 ###################################################################################
 # Test the version of python to make sure it's at least the version the script
@@ -59,7 +58,7 @@ def main():
         
         else:
             print("\n") 
-            print("Working on project: %s" %projectName)
+            print("Examining project %s for active manual review tasks." %projectName)
 
             # Get historical RTI ( Request/Task/Inventory Data) for project
             EXISTING_RTI_MAPPINGS = RTI.RTIData.get_historical_RTI_mappings(projectID)
@@ -69,19 +68,19 @@ def main():
 
             # see if there are any tasks to worry about
             if PROJECTTASKDATA:
-                print("There are tasks for this project")
+                print("    - There are active manual review tasks for this project")
                 # See if there is a matching v6 project
                 v6_projectID = FNCI.v6.project.getProjectID.get_project_id(config.v6_teamName, projectName, v6_authToken)
                 
                 if v6_projectID == "No Matching Project Found":
                     # Since there is no project in v6 one needs to be created                   
                     v6_projectID = FNCI.v6.project.copyProjectWithConfiguration.create_cloned_project(config.v6_teamName, projectName, v6_authToken)
-                    print("New project %s created in v6" %projectName)
-                    print("    v6 ProjectID is %s" %v6_projectID) 
+                    print("    - No matching project found in v6.  Creating project %s in v6" %projectName)
+                    print("        -- v6 ProjectID is %s" %v6_projectID) 
 
                 else:
-                    print("There is a corresponding project of name %s in v6" %projectName)
-                    print("    v6 ProjectID is %s" %v6_projectID) 
+                    print("    - There is a corresponding project of name %s in v6" %projectName)
+                    print("        -- v6 ProjectID is %s" %v6_projectID) 
                 
     
                 # Get the inventory from the project           
@@ -97,12 +96,17 @@ def main():
                       
                     # get the data for the inventory item that the task is associated with  
                     if inventoryId in PROJECTINVENTORYDATA.keys():
+                        
+                        # print the component name to simplify tracking in console output
+                        componentName = PROJECTINVENTORYDATA[inventoryId][3]
+                        print("")
+                        print("  ** Status for component: %s" %componentName)
 
                         if taskId in EXISTING_RTI_MAPPINGS.keys():
                             # There is a corresponding request in v6 for this task
                             v6RequestID = EXISTING_RTI_MAPPINGS[taskId][1]
                             
-                            print("taskId %s already has a requestId of %s associated with it." %(taskId, v6RequestID))
+                            print("    - Task with ID %s already has a v6 requestId of %s associated with it." %(taskId, v6RequestID))
                             logger.debug("taskId %s already has a requestId %s associated with it." %(taskId, v6RequestID))
                             
                             workflow.update_request.get_update_for_existing_request(v6_projectID, taskId, v6RequestID )
@@ -118,7 +122,7 @@ def main():
                             requesterEmail = projectOwnerEmail                       
                             
                             v6RequestID = workflow.create_request.create_new_request(v6_projectID, taskId, projectOwnerEmail, requesterEmail, PROJECTINVENTORYDATA[inventoryId])
-                            print("taskId %s now has requestId  %s associated with it " %(taskId, v6RequestID))
+                            print("    - Task with ID taskId %s now has v6 requestId %s associated with it " %(taskId, v6RequestID))
                             
                             EXISTING_RTI_MAPPINGS[taskId] = [inventoryId, v6RequestID]
                             logger.debug("taskId %s now has requestId  %s associated with it " %(taskId, v6RequestID))
@@ -129,11 +133,11 @@ def main():
                 RTI.RTIData.update_RTI_mappings(projectID, EXISTING_RTI_MAPPINGS)
                 
             else:
-                print("There are no tasks for this project")
+                print("    - There are no tasks for this project")
             
 
           
-
+    print("\n")
     print("Script Completed")
      
 if __name__ == "__main__":
