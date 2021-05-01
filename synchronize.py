@@ -46,6 +46,7 @@ def main():
 
     # Start to cycle through projects in v7 looking for open tasks
     # For now just the one project we have configured for testing
+    print("###############################################################################")
     for projectID in range(1,10):
 
         #------------------------------------------------------------------------------------------------------#
@@ -57,6 +58,7 @@ def main():
             logger.debug("No project has a projectID of %s" %projectID)    
         
         else:
+            
             print("\n") 
             print("Examining project %s for active manual review tasks." %projectName)
 
@@ -131,11 +133,13 @@ def main():
                 # Now update the json data file with any new requests that were created.
                 # This will be removed once the inventory has the associated request ID
                 RTI.RTIData.update_RTI_mappings(projectID, EXISTING_RTI_MAPPINGS)
+
                 
             else:
                 print("    - There are no tasks for this project")
             
-
+            print("")
+            print("###############################################################################")
           
     print("\n")
     print("Script Completed")
