@@ -1,2 +1,4 @@
 /_workflow.log
 /requests_mappings.json
+/RTI_DATAFILES
+/RTI_DATAFILES/*_requests_mappings.json

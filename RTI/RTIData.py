@@ -5,6 +5,7 @@ Created on Sep 21, 2019
 '''
 import logging
 import json
+import os
 
 import config
 
@@ -38,6 +39,9 @@ def get_historical_RTI_mappings(projectID):
 def update_RTI_mappings(projectID, EXISTING_RTI_MAPPINGS):
    
     logger.debug("Entering update_RTI_mappings with projectID of %s" %projectID)
+    
+    if not os.path.exists(config.RTI_MAPPINGS_DIRECTORY):
+        os.makedirs(config.RTI_MAPPINGS_DIRECTORY)
        
     RTI_MAPPINGS_FILE = config.RTI_MAPPINGS_DIRECTORY + "project" + str(projectID) +  "_" + config.RTI_MAPPINGS_FILE_SUFFIX
     logger.debug("Updating %s" %RTI_MAPPINGS_FILE )     
