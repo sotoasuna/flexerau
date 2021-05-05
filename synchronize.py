@@ -47,7 +47,7 @@ def main():
     # Start to cycle through projects in v7 looking for open tasks
     # For now just the one project we have configured for testing
     print("###############################################################################")
-    for projectID in range(1,10):
+    for projectID in range(1,50):
 
         #------------------------------------------------------------------------------------------------------#
         projectName = FNCI.v7.projects.getProjectInventory.get_project_name_by_id(projectID, authToken)

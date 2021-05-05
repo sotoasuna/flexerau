@@ -65,7 +65,7 @@ def get_taskUpdateBody(UPDATEINFORMATION):
     requestURLText = "Request URL: " + requestURL + "<br>"
     currentRequestIdText = "RequestID: " + str(workflow_requestId) + "<br>"
     lastUpdateText = "Last Activity: " + updateDate + "<br>"
-    currentReviewLevelText = "Current Review Level: :  " + currentReviewLevelName + "<br>"
+    currentReviewLevelText = "Current Review Level:  " + currentReviewLevelName + "<br>"
     currentAssigneeText = "Current Assignee:  " + currentAssigneeName
     
     updateText = requestURLText + currentRequestIdText + lastUpdateText + currentReviewLevelText + currentAssigneeText
