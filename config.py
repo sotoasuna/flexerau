@@ -22,3 +22,11 @@ v6_projectTemplatename = "WF_Template"
 RTI_MAPPINGS_DIRECTORY = "RTI_DATAFILES/"
 RTI_MAPPINGS_FILE_SUFFIX = "requests_mappings.json"
 
+#----------------------------------------------------------------------------#
+#  MySQL DAtabase details to hold the place for a new API in v7 (2019R4??) for user data
+
+mySQLHOST = "localhost"
+mySQLUSER = "fnciuser"
+mySQLPASSWORD = "Fnci%1234"
+mySQLDATABASE = "2019r3_82"
+

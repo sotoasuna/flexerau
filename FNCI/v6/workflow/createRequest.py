@@ -19,6 +19,7 @@ logger = logging.getLogger(__name__)
 #-----------------------------------------------------------------------#
 def create_workflow_request(REQUESTDETAILS, authToken):
     logger.debug("Entering create_workflow_request")
+    logger.debug("REQUESTDETAILS: %s" %REQUESTDETAILS)
     
     
     createRequestBody = get_createRequestBody(REQUESTDETAILS) 
@@ -49,14 +50,19 @@ def create_workflow_request(REQUESTDETAILS, authToken):
         elif HttpStatusCode == 400:
             
                 logger.info(response.json()["Message"])
+                print(response.json()["Content"])
+                exit()
 
         
         else:
             # Unknown status code that needs to be investigated
             logger.error("Unknown HttpStatusCode: %s" %response.json()["Error: "])
             print("Unknown Error.  Please see log for details.....")   
+            exit()
  
-
+    else:
+        print("Unknown Error.  Please see log for details.....")   
+        exit()
 #-----------------------------------------------------------#
  
 def get_createRequestBody(REQUESTDETAILS): 

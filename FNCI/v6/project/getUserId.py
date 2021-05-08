@@ -38,9 +38,18 @@ def get_user_id_from_email(emailAddress, authToken):
         
         if  HttpStatusCode == 200:
             
-            userId = (response.json()["Content"])
-            logger.debug("     User ID for %s is %s" %(emailAddress, userId))
-            return userId
+            if "Content" in response.json(): 
+            
+                userId = (response.json()["Content"])
+                logger.debug("     User ID for %s is %s" %(emailAddress, userId))
+                return userId
+            
+            else:
+                errorMessage = (response.json()["Errors(s) "])
+                print(errorMessage)
+                print("Exiting script")
+                exit()
+                
         
         elif HttpStatusCode == 400:
             
@@ -51,4 +60,15 @@ def get_user_id_from_email(emailAddress, authToken):
             logger.error("Unknown HttpStatusCode: %s" %response.json()["Error: "])
             print("Unknown Error.  Please see log for details.....")   
             
-            
+    else: 
+        errorMessage = (response.json()["Error(s) "])
+        
+        if errorMessage["User not found "] == "System did not recognize the user email!":
+            print("    - User with email address %s not found in workflow system" %emailAddress)
+            print("    - Exiting......")
+            exit()
+        else:
+            print(errorMessage)
+            print("Exiting......")
+            exit()
+                      

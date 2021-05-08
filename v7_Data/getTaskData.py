@@ -32,7 +32,12 @@ def get_v7_task_data(projectID):
         for task in TASKS:
             inventoryId = task["inventoryId"]
             taskId = task["id"]
-            PROJECTTASKS[taskId] = inventoryId
+            ownerId = task["ownerId"]
+            createdById = task["createdById"]
+            lastUpdatedById = task["lastUpdatedById"]
+
+            
+            PROJECTTASKS[taskId] = [inventoryId, ownerId, createdById, lastUpdatedById]
             
         return PROJECTTASKS
     else:

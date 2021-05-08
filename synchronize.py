@@ -33,6 +33,7 @@ import FNCI.v6.project.copyProjectWithConfiguration
 
 import v7_Data.getTaskData
 import v7_Data.getInventoryData
+import v7_Data.getUserData
 import RTI.RTIData  # this will be removed once it is supported in the inventory json data
 import workflow.create_request
 import workflow.update_request
@@ -91,7 +92,8 @@ def main():
                 # Cycle though the tasks and get the inventory information for each one
                 for taskId in PROJECTTASKDATA:
                     logger.debug("Check inventory for task with id %s" %taskId)
-                    inventoryId = PROJECTTASKDATA[taskId]
+                    inventoryId = PROJECTTASKDATA[taskId][0]
+
                      
                     # For the task get the details for that project inventory item.
                     # What if a task has two items?  Could it?                 
@@ -115,13 +117,23 @@ def main():
                             
                         else:
                             # Create a new request
-                            projectOwnerEmail = FNCI.v7.projects.getProjectInventory.get_project_owner_email_id(projectID, authToken)           
+                            
+                            #  The FNCI User information will be replced via a REST call when available
+                            FNCIUSERS = v7_Data.getUserData.get_v7_user_date_from_mysqldb()
+                            
+                            # Users IDs associated with the task
+                            ownerId = PROJECTTASKDATA[taskId][1]
+                            createdById = PROJECTTASKDATA[taskId][2]
+                            
+                            #projectOwnerEmail = FNCI.v7.projects.getProjectInventory.get_project_owner_email_id(projectID, authToken)
+                            # Email is the second item in the user information list
+                            projectOwnerEmail = FNCIUSERS[ownerId][1]
+                            requesterEmail  = FNCIUSERS[createdById][1]       
+                            
                             logger.debug("Project owner eMail Address is %s" %projectOwnerEmail)
-                           
-                            # Map the created Id value back to an email for v6 to determine the ID
-                            # For now assume it is the same as the project owner
-                            # TODO
-                            requesterEmail = projectOwnerEmail                       
+                            logger.debug("Requester eMail Address is %s" %requesterEmail)
+                            exit
+                    
                             
                             v6RequestID = workflow.create_request.create_new_request(v6_projectID, taskId, projectOwnerEmail, requesterEmail, PROJECTINVENTORYDATA[inventoryId])
                             print("    - Task with ID taskId %s now has v6 requestId %s associated with it " %(taskId, v6RequestID))

@@ -24,6 +24,7 @@ def create_new_request(v6_projectID, taskId, projectOwnerEmail, requesterEmail, 
     projectOwnerId = FNCI.v6.project.getUserId.get_user_id_from_email(projectOwnerEmail, v6_authToken)
     requesterId = FNCI.v6.project.getUserId.get_user_id_from_email(requesterEmail, v6_authToken)
     
+    
     # Break apart the list for the component/version/license ids
     componentId = INVENTORYDETAILS[0]
     componentVersionId = INVENTORYDETAILS[1]
