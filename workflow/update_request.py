@@ -70,7 +70,11 @@ def get_update_for_existing_request(v6_projectID, taskId, workflow_requestId):
         
         else:
             logger.debug("Request %s is still in a draft state" %workflow_requestId)
-            print("        -- Request %s is currently in a draft state" %workflow_requestId)     
+            print("        -- Request %s is currently in a draft state" %workflow_requestId)  
+            # Update task contents as well with approval date and message
+            UPDATEDETAILS = [requestURL, workflow_requestId, "N/A", "Request currently in Draft state", "N/A"]
+            # Provide an update to the task with the data retrieved from the workflow item
+            FNCI.v7.tasks.updateTask.update_task(taskId, UPDATEDETAILS, authToken)   
 
 #-----------------------------------------------------------------------#
 

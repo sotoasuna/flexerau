@@ -131,12 +131,13 @@ def main():
                             requesterEmail  = FNCIUSERS[createdById][1]       
                             
                             logger.debug("Project owner eMail Address is %s" %projectOwnerEmail)
-                            logger.debug("Requester eMail Address is %s" %requesterEmail)
-                            exit
-                    
+                            logger.debug("Requester eMail Address is %s" %requesterEmail)              
                             
                             v6RequestID = workflow.create_request.create_new_request(v6_projectID, taskId, projectOwnerEmail, requesterEmail, PROJECTINVENTORYDATA[inventoryId])
                             print("    - Task with ID taskId %s now has v6 requestId %s associated with it " %(taskId, v6RequestID))
+                            # Update Task with info
+                            workflow.update_request.get_update_for_existing_request(v6_projectID, taskId, v6RequestID )
+                            
                             
                             EXISTING_RTI_MAPPINGS[taskId] = [inventoryId, v6RequestID]
                             logger.debug("taskId %s now has requestId  %s associated with it " %(taskId, v6RequestID))
