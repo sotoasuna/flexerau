@@ -23,10 +23,13 @@ def create_workflow_request(REQUESTDETAILS, authToken):
     
     
     createRequestBody = get_createRequestBody(REQUESTDETAILS) 
+    logger.debug("createRequestBody:  %s"  %createRequestBody)
       
     headers = {'Content-Type': 'application/json', 'Authorization': authToken}  
     RESTAPI_URL = WORKFLOW_ENDPOINT_URL
-    logger.debug("    RESTAPI_URL: %s" %RESTAPI_URL)  
+    logger.debug("    RESTAPI_URL: %s" %RESTAPI_URL)
+    logger.debug("        headers: %s" %headers)   
+    
     response = requests.post(RESTAPI_URL, data=createRequestBody, headers=headers)
              
     try:

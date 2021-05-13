@@ -48,7 +48,7 @@ def main():
     # Start to cycle through projects in v7 looking for open tasks
     # For now just the one project we have configured for testing
     print("###############################################################################")
-    for projectID in range(1,50):
+    for projectID in range(3,4):
 
         #------------------------------------------------------------------------------------------------------#
         projectName = FNCI.v7.projects.getProjectInventory.get_project_name_by_id(projectID, authToken)
@@ -105,6 +105,7 @@ def main():
                         componentName = PROJECTINVENTORYDATA[inventoryId][3]
                         print("")
                         print("  ** Status for component: %s" %componentName)
+                        logger.info("  ** Status for component: %s" %componentName)
 
                         if taskId in EXISTING_RTI_MAPPINGS.keys():
                             # There is a corresponding request in v6 for this task

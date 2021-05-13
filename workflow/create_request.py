@@ -29,6 +29,8 @@ def create_new_request(v6_projectID, taskId, projectOwnerEmail, requesterEmail, 
     componentId = INVENTORYDETAILS[0]
     componentVersionId = INVENTORYDETAILS[1]
     selectedLicenseId = INVENTORYDETAILS[2]
+    
+    logger.debug("Create request for componentId: %s, componentVersionId: %s, selectedLicenseId: %s" %(componentId, componentVersionId, selectedLicenseId))
    
     # Group the data together in a list to pass it to the RESTAPI
     REQUESTDETAILS = [v6_projectID, requesterId, projectOwnerId, componentId, componentVersionId, selectedLicenseId ]

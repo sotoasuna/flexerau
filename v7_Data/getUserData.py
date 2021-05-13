@@ -24,7 +24,7 @@ def get_v7_user_date_from_mysqldb():
         # prepare a cursor object using cursor() method
     cursor = db.cursor()
     
-    sqlQuery = "SELECT ID_, LOGIN_, FIRST_NAME_, LAST_NAME_, EMAIL_  FROM 2019r3_82.pas_user;"
+    sqlQuery = "SELECT ID_, LOGIN_, FIRST_NAME_, LAST_NAME_, EMAIL_  FROM 2019r3.pas_user;"
     
     try:
         # Execute the SQL command
