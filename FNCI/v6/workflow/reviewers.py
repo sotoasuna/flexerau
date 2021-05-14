@@ -42,10 +42,11 @@ def get_current_reviewer(requestId, authToken):
                 firstName = contact["firstName"]
                 lastName = contact["lastName"]
                 email = contact["email"]
+                username = contact["login"]
             
             currentReviewer = "%s %s (%s)" %(firstName, lastName, email)
              
-            return currentReviewer
+            return username, currentReviewer
 
         elif HttpStatusCode == 400:           
             logger.info(response.json()["Message"])

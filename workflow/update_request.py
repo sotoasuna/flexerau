@@ -11,7 +11,7 @@ import FNCI.v6.workflow.requestData
 import FNCI.v6.workflow.reviewers
 import FNCI.v7.tasks.updateTask
 import FNCI.v7.tasks.closeTask
-
+import FNCI.v7.tasks.reassignTask
 
 logger = logging.getLogger(__name__)
 
@@ -42,7 +42,7 @@ def get_update_for_existing_request(v6_projectID, taskId, workflow_requestId):
                 currentReviewLevelName = detail["projectLevelDefinition"]["name"]
                 
                 # Get full details for the reviewer of the current request
-                currentReviewer = FNCI.v6.workflow.reviewers.get_current_reviewer(workflow_requestId, v6_authToken)
+                username, currentReviewer = FNCI.v6.workflow.reviewers.get_current_reviewer(workflow_requestId, v6_authToken)
                 
                 UPDATEDETAILS = [requestURL, workflow_requestId, updateDate, currentReviewLevelName, currentReviewer]
                 
@@ -52,6 +52,7 @@ def get_update_for_existing_request(v6_projectID, taskId, workflow_requestId):
                  
                 # Provide an update to the task with the data retrieved from the workflow item
                 FNCI.v7.tasks.updateTask.update_task(taskId, UPDATEDETAILS, authToken)
+                FNCI.v7.tasks.reassignTask.reassign_task_by_taskID(taskId, username, authToken)
                 
       
             else:

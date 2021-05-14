@@ -120,7 +120,7 @@ def main():
                             # Create a new request
                             
                             #  The FNCI User information will be replced via a REST call when available
-                            FNCIUSERS = v7_Data.getUserData.get_v7_user_date_from_mysqldb()
+                            FNCIUSERS = v7_Data.getUserData.get_v7_user_data_from_mysqldb()
                             
                             # Users IDs associated with the task
                             ownerId = PROJECTTASKDATA[taskId][1]
