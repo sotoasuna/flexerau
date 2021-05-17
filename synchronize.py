@@ -34,6 +34,7 @@ import FNCI.v6.project.copyProjectWithConfiguration
 import v7_Data.getTaskData
 import v7_Data.getInventoryData
 import v7_Data.getUserData
+import v6_Data.manage_custom_data
 import RTI.RTIData  # this will be removed once it is supported in the inventory json data
 import workflow.create_request
 import workflow.update_request
@@ -48,7 +49,7 @@ def main():
     # Start to cycle through projects in v7 looking for open tasks
     # For now just the one project we have configured for testing
     print("###############################################################################")
-    for projectID in range(9,10):
+    for projectID in range(17,18):
 
         #------------------------------------------------------------------------------------------------------#
         projectName = FNCI.v7.projects.getProjectInventory.get_project_name_by_id(projectID, authToken)
@@ -71,7 +72,7 @@ def main():
 
             # see if there are any tasks to worry about
             if PROJECTTASKDATA:
-                print("    - There are active manual review tasks for this project")
+                print("    - There are %s active manual review tasks for this project" %(len(PROJECTTASKDATA)))
                 # See if there is a matching v6 project
                 v6_projectID = FNCI.v6.project.getProjectID.get_project_id(config.v6_teamName, projectName, v6_authToken)
                 
@@ -86,27 +87,28 @@ def main():
                     print("        -- v6 ProjectID is %s" %v6_projectID) 
                 
     
-                # Get the inventory from the project           
+                # Get the inventory from the project  
+                        
                 PROJECTINVENTORYDATA = v7_Data.getInventoryData.get_v7_inventory_data(projectID)
               
                 # Cycle though the tasks and get the inventory information for each one
+               
                 for taskId in PROJECTTASKDATA:
                     logger.debug("Check inventory for task with id %s" %taskId)
                     inventoryId = PROJECTTASKDATA[taskId][0]
-
-                     
-                    # For the task get the details for that project inventory item.
-                    # What if a task has two items?  Could it?                 
-                      
-                    # get the data for the inventory item that the task is associated with  
+                    logger.debug("    Inventory ID %s" %inventoryId)
+                   
+                    # Get the data for the inventory item that the task is associated with  
                     if inventoryId in PROJECTINVENTORYDATA.keys():
                         
                         # print the component name to simplify tracking in console output
-                        componentName = PROJECTINVENTORYDATA[inventoryId][3]
+                        componentVersionName = PROJECTINVENTORYDATA[inventoryId][3]
+                        
                         print("")
-                        print("  ** Status for component: %s" %componentName)
-                        logger.info("  ** Status for component: %s" %componentName)
+                        print("  ** Status for component: %s" %(componentVersionName))
+                        logger.info("  ** Status for component: %s" %(componentVersionName))
 
+                        # See if we have existing workflow item for this taskID
                         if taskId in EXISTING_RTI_MAPPINGS.keys():
                             # There is a corresponding request in v6 for this task
                             v6RequestID = EXISTING_RTI_MAPPINGS[taskId][1]
@@ -117,9 +119,24 @@ def main():
                             workflow.update_request.get_update_for_existing_request(v6_projectID, taskId, v6RequestID )
                             
                         else:
-                            # Create a new request
+                            # No current mapping so create a new request
+                            print("    - No previous mapping for task with ID:  %s" %taskId)
                             
-                            #  The FNCI User information will be replced via a REST call when available
+                            # What is being requested for use?
+                            componentId = PROJECTINVENTORYDATA[inventoryId][0] 
+                            componentVersionId = PROJECTINVENTORYDATA[inventoryId][1]
+                            componentLicenseId = PROJECTINVENTORYDATA[inventoryId][2]
+                            
+                            # See if there is any custom data within the request
+                            if (componentId > 1000000000) or (componentVersionId > 1000000000) or (componentLicenseId > 1000000000):
+                                # At least one item is custom
+                                INVENTORYITEMDATA = v6_Data.manage_custom_data.determine_custom_data(PROJECTINVENTORYDATA[inventoryId]) 
+                            
+                            else:
+                                # This is all stock data from the PDL
+                                INVENTORYITEMDATA = [componentId, componentVersionId, componentLicenseId]
+
+                            #  The FNCI User information will be replaced via a REST call when available
                             FNCIUSERS = v7_Data.getUserData.get_v7_user_data_from_mysqldb()
                             
                             # Users IDs associated with the task
@@ -134,7 +151,7 @@ def main():
                             logger.debug("Project owner eMail Address is %s" %projectOwnerEmail)
                             logger.debug("Requester eMail Address is %s" %requesterEmail)              
                             
-                            v6RequestID = workflow.create_request.create_new_request(v6_projectID, taskId, projectOwnerEmail, requesterEmail, PROJECTINVENTORYDATA[inventoryId])
+                            v6RequestID = workflow.create_request.create_new_request(v6_projectID, taskId, projectOwnerEmail, requesterEmail, INVENTORYITEMDATA)
                             print("    - Task with ID taskId %s now has v6 requestId %s associated with it " %(taskId, v6RequestID))
                             # Update Task with info
                             workflow.update_request.get_update_for_existing_request(v6_projectID, taskId, v6RequestID )
