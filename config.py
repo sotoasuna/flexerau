@@ -6,11 +6,14 @@ Created on Sep 14, 2019
 
 FNCI_HOST = "localhost"
 BASEURL = "http://" + FNCI_HOST + ":8888/codeinsight/api/"
-AUTHTOKEN = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJvb3duZXIiLCJ1c2VySWQiOjMsImlhdCI6MTU3MTc1MzU3MX0.mAXDEDFeqA01fzffqR3gRdYzMlZDDXnWRbC5Ipsp3i4MfV9T2cx_L_5ko6KWGdMgqM7iw_dDq6FBToqhcvHcGw"
+# Token for Workflow Admin User  ( must be added to project to update task)
+ADMIN_AUTHTOKEN = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ3b3JrZmxvd19hZG1pbiIsInVzZXJJZCI6OCwiaWF0IjoxNTczNjQxNzAzfQ.gWzqpNgcsJ1X1PuAMd-y1jpLYaF17lfHXhVjVBdzJox4AkUZKsQwo7ngZBCxZ9M7W6wXc6sTZVXyfQqRmdyGvA"
+AUTHTOKEN = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJvb3duZXIiLCJ1c2VySWQiOjUsImlhdCI6MTU3MzQ3OTE5MH0.qq874IWhQC44Ns5iU0xh_8p2R4CpdMVWuVSqD2qNDO5Kw74REzE4gu95xsohBx9Gc4IUdXlfrQ9FA7wGOXMkSg"
 
 v6_FNCI_HOST = "workflow.flexnetcodeinsight.com"
 v6_BASEURL = "http://" + v6_FNCI_HOST + ":8888/palamida/api/"
-v6_AUTHTOKEN = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJvb3duZXIiLCJpYXQiOjE1NzE3NTMzMDB9.l6T-2ChetV2ntWb8M261RM7CxovTSyahG7zkfJvar9Y"
+# Token for Workflow Admin User
+v6_AUTHTOKEN = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ3b3JrZmxvd19hZG1pbiIsImlhdCI6MTU3MzY0MTIzMn0.eJB90KrcUn1OiqnZXBi4Bcv8L7gjZ7w394jT9YvJhpg"
 v6_teamName = "Engineering"
 v6_projectTemplatename = "WF_Template"
 

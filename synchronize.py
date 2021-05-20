@@ -29,11 +29,11 @@ import config
 import FNCI.v7.projects.getProjectInventory
 import FNCI.v6.project.getProjectID
 import FNCI.v6.project.copyProjectWithConfiguration
+import FNCI.v7.users.searchUsers
 
 
 import v7_Data.getTaskData
 import v7_Data.getInventoryData
-import v7_Data.getUserData
 import v6_Data.manage_custom_data
 import RTI.RTIData  # this will be removed once it is supported in the inventory json data
 import workflow.create_request
@@ -44,12 +44,13 @@ import workflow.update_request
 def main():
 
     authToken = config.AUTHTOKEN
+    admin_authToken = config.ADMIN_AUTHTOKEN
     v6_authToken = config.v6_AUTHTOKEN
 
     # Start to cycle through projects in v7 looking for open tasks
     # For now just the one project we have configured for testing
     print("###############################################################################")
-    for projectID in range(17,18):
+    for projectID in range(5,6):
 
         #------------------------------------------------------------------------------------------------------#
         projectName = FNCI.v7.projects.getProjectInventory.get_project_name_by_id(projectID, authToken)
@@ -135,18 +136,15 @@ def main():
                             else:
                                 # This is all stock data from the PDL
                                 INVENTORYITEMDATA = [componentId, componentVersionId, componentLicenseId]
-
-                            #  The FNCI User information will be replaced via a REST call when available
-                            FNCIUSERS = v7_Data.getUserData.get_v7_user_data_from_mysqldb()
                             
                             # Users IDs associated with the task
                             ownerId = PROJECTTASKDATA[taskId][1]
                             createdById = PROJECTTASKDATA[taskId][2]
-                            
-                            #projectOwnerEmail = FNCI.v7.projects.getProjectInventory.get_project_owner_email_id(projectID, authToken)
-                            # Email is the second item in the user information list
-                            projectOwnerEmail = FNCIUSERS[ownerId][1]
-                            requesterEmail  = FNCIUSERS[createdById][1]       
+                            # Use the ID within the task data to get the user's email address which is needed
+                            # on the v6 side to create the request
+                            projectOwnerEmail = FNCI.v7.users.searchUsers.get_user_email_by_id(ownerId, admin_authToken)
+                            requesterEmail = FNCI.v7.users.searchUsers.get_user_email_by_id(createdById, admin_authToken)
+      
                             
                             logger.debug("Project owner eMail Address is %s" %projectOwnerEmail)
                             logger.debug("Requester eMail Address is %s" %requesterEmail)              
