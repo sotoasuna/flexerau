@@ -7,6 +7,7 @@ import logging
 
 import config
 import FNCI.v7.projects.getProjectInventory
+import FNCI.v7.inventories.getInventoryItemDetails
 
 
 logger = logging.getLogger(__name__)
@@ -15,32 +16,30 @@ logger = logging.getLogger(__name__)
 authToken = config.AUTHTOKEN
 #------------------------------------------------------------------#
 
-def get_v7_inventory_data(projectID):
-   
-    INVENTORYITEMS = {}     
+def get_v7_inventory_item_data(inventoryID, authToken):
+    logger.debug("Entering get_v7_inventory_item_data with projectID: %s" %inventoryID)   
     
-    logger.debug("Entering get_v7_inventory_data with projectID: %s" %projectID)   
-     
-    INVENTORY = FNCI.v7.projects.getProjectInventory.get_project_inventory(projectID, authToken) 
+    
+    INVENTORYDATA = FNCI.v7.inventories.getInventoryItemDetails.get_inventory_item_information_by_id(inventoryID, authToken)
 
-    #--------------------------------------------------------------------------#    
-    # Create a dictionary containing key information about the inventory item    
-    for inventoryITEM in INVENTORY:
-        inventoryItemId = inventoryITEM["id"]
-        componentId = inventoryITEM["componentId"]
-        componentVersionId = inventoryITEM["componentVersionId"]
-        selectedLicenseId = inventoryITEM["selectedLicenseId"]
-        disclosed = inventoryITEM["disclosed"]
-        name = inventoryITEM["name"]
-        componentName = inventoryITEM["componentName"]
-        componentVersionName = inventoryITEM["componentVersionName"]
+    disclosed = INVENTORYDATA["disclosed"]    
+
+    # was the item disclosed?
+    if disclosed == True:
+        DATA = {}
+
+        DATA["componentId"] = INVENTORYDATA["componentId"]
+        DATA["componentVersionId"] = INVENTORYDATA["componentVersionId"]
+        DATA["selectedLicenseId"] = INVENTORYDATA["selectedLicenseId"]
+        DATA["name"] = INVENTORYDATA["name"]
+        DATA["componentName"] = INVENTORYDATA["componentName"]
+        DATA["componentVersionName"] = INVENTORYDATA["componentVersionName"]
+    
         
-        # was the item disclosed?
-        if disclosed == True:
-            
-            INVENTORYITEMS[inventoryItemId] = [componentId, componentVersionId, selectedLicenseId, name, componentName, componentVersionName]
-            
-    return INVENTORYITEMS
+        return DATA
+
+
+
 
 
 

@@ -16,7 +16,7 @@ import FNCI.v7.tasks.reassignTask
 logger = logging.getLogger(__name__)
 
 #-----------------------------------------------------------------------#
-def get_update_for_existing_request(v6_projectID, taskId, workflow_requestId):
+def get_update_for_existing_request(v6_projectID, taskId, workflow_requestId, requestURL):
     logger.debug("Entering get_update_for_existing_request")
     logger.debug("Update the  request for taskId: %s with details from workflow request ID %s" %(taskId, workflow_requestId))
     print("    - Update the request for task with ID %s with details from v6 workflow request %s" %(taskId, workflow_requestId))
@@ -26,7 +26,6 @@ def get_update_for_existing_request(v6_projectID, taskId, workflow_requestId):
     
     # Get workflow details from v6  
     REQUESTDETAILS = FNCI.v6.workflow.requestData.get_current_request_details(workflow_requestId, v6_authToken)   
-    requestURL = "http://" + config.v6_FNCI_HOST + ":8888/palamida/RequestDetails.htm?rid=" + str(workflow_requestId) + "&projectId=" + str(v6_projectID) + "&from=requests"
 
     # Cycle through even thought there should only be one in the response
     for detail in REQUESTDETAILS:

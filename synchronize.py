@@ -30,12 +30,14 @@ import FNCI.v7.projects.getProjectInventory
 import FNCI.v6.project.getProjectID
 import FNCI.v6.project.copyProjectWithConfiguration
 import FNCI.v7.users.searchUsers
+import FNCI.v7.inventories.getInventoryItemDetails
+import FNCI.v7.inventories.updateInventory
 
 
 import v7_Data.getTaskData
 import v7_Data.getInventoryData
 import v6_Data.manage_custom_data
-import RTI.RTIData  # this will be removed once it is supported in the inventory json data
+
 import workflow.create_request
 import workflow.update_request
 
@@ -50,7 +52,7 @@ def main():
     # Start to cycle through projects in v7 looking for open tasks
     # For now just the one project we have configured for testing
     print("###############################################################################")
-    for projectID in range(5,6):
+    for projectID in range(6,7):
 
         #------------------------------------------------------------------------------------------------------#
         projectName = FNCI.v7.projects.getProjectInventory.get_project_name_by_id(projectID, authToken)
@@ -65,8 +67,6 @@ def main():
             print("\n") 
             print("Examining project %s for active manual review tasks." %projectName)
 
-            # Get historical RTI ( Request/Task/Inventory Data) for project
-            EXISTING_RTI_MAPPINGS = RTI.RTIData.get_historical_RTI_mappings(projectID)
                         
             # Get project Tasks and the inventory item they are associated with
             PROJECTTASKDATA = v7_Data.getTaskData.get_v7_task_data(projectID)
@@ -87,10 +87,6 @@ def main():
                     print("    - There is a corresponding project of name %s in v6" %projectName)
                     print("        -- v6 ProjectID is %s" %v6_projectID) 
                 
-    
-                # Get the inventory from the project  
-                        
-                PROJECTINVENTORYDATA = v7_Data.getInventoryData.get_v7_inventory_data(projectID)
               
                 # Cycle though the tasks and get the inventory information for each one
                
@@ -98,40 +94,30 @@ def main():
                     logger.debug("Check inventory for task with id %s" %taskId)
                     inventoryId = PROJECTTASKDATA[taskId][0]
                     logger.debug("    Inventory ID %s" %inventoryId)
-                   
-                    # Get the data for the inventory item that the task is associated with  
-                    if inventoryId in PROJECTINVENTORYDATA.keys():
-                        
-                        # print the component name to simplify tracking in console output
-                        componentVersionName = PROJECTINVENTORYDATA[inventoryId][3]
-                        
-                        print("")
-                        print("  ** Status for component: %s" %(componentVersionName))
-                        logger.info("  ** Status for component: %s" %(componentVersionName))
+                    
+                    
+                    # See if there is an existing workflowURL for the inventory item associated to this task
+                    workflowURL = FNCI.v7.inventories.getInventoryItemDetails.get_inventory_item_workflowURL_by_id(inventoryId, authToken)
 
-                        # See if we have existing workflow item for this taskID
-                        if taskId in EXISTING_RTI_MAPPINGS.keys():
-                            # There is a corresponding request in v6 for this task
-                            v6RequestID = EXISTING_RTI_MAPPINGS[taskId][1]
-                            
-                            print("    - Task with ID %s already has a v6 requestId of %s associated with it." %(taskId, v6RequestID))
-                            logger.debug("taskId %s already has a requestId %s associated with it." %(taskId, v6RequestID))
-                            
-                            workflow.update_request.get_update_for_existing_request(v6_projectID, taskId, v6RequestID )
-                            
-                        else:
+                    if workflowURL == "N/A":
+                        # There is no workflow item so create it
+                        # Get the component details from the inventory Item
+                        INVENTORYDATA = v7_Data.getInventoryData.get_v7_inventory_item_data(inventoryId, authToken)
+                        
+                        if len(INVENTORYDATA) > 0:
+                            # This was disclosed so create the request
                             # No current mapping so create a new request
                             print("    - No previous mapping for task with ID:  %s" %taskId)
                             
                             # What is being requested for use?
-                            componentId = PROJECTINVENTORYDATA[inventoryId][0] 
-                            componentVersionId = PROJECTINVENTORYDATA[inventoryId][1]
-                            componentLicenseId = PROJECTINVENTORYDATA[inventoryId][2]
+                            componentId = INVENTORYDATA["componentId"] 
+                            componentVersionId = INVENTORYDATA["componentVersionId"]
+                            componentLicenseId = INVENTORYDATA["selectedLicenseId"]
                             
                             # See if there is any custom data within the request
                             if (componentId > 1000000000) or (componentVersionId > 1000000000) or (componentLicenseId > 1000000000):
                                 # At least one item is custom
-                                INVENTORYITEMDATA = v6_Data.manage_custom_data.determine_custom_data(PROJECTINVENTORYDATA[inventoryId]) 
+                                INVENTORYITEMDATA = v6_Data.manage_custom_data.determine_custom_data(INVENTORYDATA) 
                             
                             else:
                                 # This is all stock data from the PDL
@@ -151,17 +137,28 @@ def main():
                             
                             v6RequestID = workflow.create_request.create_new_request(v6_projectID, taskId, projectOwnerEmail, requesterEmail, INVENTORYITEMDATA)
                             print("    - Task with ID taskId %s now has v6 requestId %s associated with it " %(taskId, v6RequestID))
+                            
+                            # Update Inventory Item with URL
+                            requestURL = "http://" + config.v6_FNCI_HOST + ":8888/palamida/RequestDetails.htm?rid=" + str(v6RequestID) + "&projectId=" + str(v6_projectID) + "&from=requests"
+                            
+                            FNCI.v7.inventories.updateInventory.update_inventory_item_workflowURL(inventoryId, requestURL, authToken)
+
                             # Update Task with info
-                            workflow.update_request.get_update_for_existing_request(v6_projectID, taskId, v6RequestID )
-                            
-                            
-                            EXISTING_RTI_MAPPINGS[taskId] = [inventoryId, v6RequestID]
-                            logger.debug("taskId %s now has requestId  %s associated with it " %(taskId, v6RequestID))
-                            
-                #--------------------------------------------------------------------------------------------------------------------------------#
-                # Now update the json data file with any new requests that were created.
-                # This will be removed once the inventory has the associated request ID
-                RTI.RTIData.update_RTI_mappings(projectID, EXISTING_RTI_MAPPINGS)
+                            workflow.update_request.get_update_for_existing_request(v6_projectID, taskId, v6RequestID, requestURL)
+                        else:
+                            logger.debug("No Inventory Data") 
+
+                        
+                    else:
+                        # This is an existing request so update the task with the latest information
+
+                        # Get the v6RequestID from the workflowURL           
+                        v6RequestID = workflowURL.split("=")[1].split("&")[0]
+
+                        workflow.update_request.get_update_for_existing_request(v6_projectID, taskId, v6RequestID, workflowURL)
+                        
+                        print("    - Task with ID %s already has a v6 requestId of %s associated with it." %(taskId, v6RequestID))
+                        logger.debug("taskId %s already has a requestId %s associated with it." %(taskId, v6RequestID))
 
                 
             else:

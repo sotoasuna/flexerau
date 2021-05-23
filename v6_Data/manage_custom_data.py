@@ -23,10 +23,11 @@ def determine_custom_data(INVENTORYITEMDATA):
     #                                    name, componentName, componentVersionName ]  
 
     # What is being requested for use?
-    componentId = INVENTORYITEMDATA[0] 
-    componentVersionId = INVENTORYITEMDATA[1]
-    componentLicenseId = INVENTORYITEMDATA[2]
-    componentVersionName = INVENTORYITEMDATA[5]
+    componentId = INVENTORYITEMDATA["componentId"] 
+    componentVersionId = INVENTORYITEMDATA["componentVersionId"]
+    componentLicenseId = INVENTORYITEMDATA["selectedLicenseId"]
+    componentVersionName = INVENTORYITEMDATA["componentVersionName"]
+
     
     #---------------------------------------------------------------------------------------#
     # Is it a custom component
