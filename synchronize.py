@@ -26,7 +26,8 @@ logger = logging.getLogger(__name__)
 
 import config
 
-import FNCI.v7.projects.getProjectInventory
+import FNCI.v7.projects.getProjects
+
 import FNCI.v6.project.getProjectID
 import FNCI.v6.project.copyProjectWithConfiguration
 import FNCI.v7.users.searchUsers
@@ -52,25 +53,27 @@ def main():
     # Start to cycle through projects in v7 looking for open tasks
     # For now just the one project we have configured for testing
     print("###############################################################################")
-    for projectID in range(6,7):
-
-        #------------------------------------------------------------------------------------------------------#
-        projectName = FNCI.v7.projects.getProjectInventory.get_project_name_by_id(projectID, authToken)
-
-        # As long on the above function did not return a value of False (valid project with inventory)
-        if projectName.strip() == "NoProject":  # if False was not returned from the API call
-
-            logger.debug("No project has a projectID of %s" %projectID)    
+    
+    PROJECTS = FNCI.v7.projects.getProjects.get_project_list(admin_authToken)
+    
+    # Cycle through each project
+    for project in PROJECTS:
         
-        else:
-            
+        projectID = project["id"]
+        projectName = project["name"]
+        # Place holder for projectStatus in upcoming release
+        projectStatus = "Not Project Complete"
+        
+        # Only check for tasks/requests if the project is not "complete"
+        
+        if projectStatus != "Project Complete":
+        
             print("\n") 
             print("Examining project %s for active manual review tasks." %projectName)
-
                         
             # Get project Tasks and the inventory item they are associated with
             PROJECTTASKDATA = v7_Data.getTaskData.get_v7_task_data(projectID)
-
+    
             # see if there are any tasks to worry about
             if PROJECTTASKDATA:
                 print("    - There are %s active manual review tasks for this project" %(len(PROJECTTASKDATA)))
@@ -82,7 +85,7 @@ def main():
                     v6_projectID = FNCI.v6.project.copyProjectWithConfiguration.create_cloned_project(config.v6_teamName, projectName, v6_authToken)
                     print("    - No matching project found in v6.  Creating project %s in v6" %projectName)
                     print("        -- v6 ProjectID is %s" %v6_projectID) 
-
+    
                 else:
                     print("    - There is a corresponding project of name %s in v6" %projectName)
                     print("        -- v6 ProjectID is %s" %v6_projectID) 
@@ -98,7 +101,7 @@ def main():
                     
                     # See if there is an existing workflowURL for the inventory item associated to this task
                     workflowURL = FNCI.v7.inventories.getInventoryItemDetails.get_inventory_item_workflowURL_by_id(inventoryId, authToken)
-
+    
                     if workflowURL == "N/A":
                         # There is no workflow item so create it
                         # Get the component details from the inventory Item
@@ -142,30 +145,34 @@ def main():
                             requestURL = "http://" + config.v6_FNCI_HOST + ":8888/palamida/RequestDetails.htm?rid=" + str(v6RequestID) + "&projectId=" + str(v6_projectID) + "&from=requests"
                             
                             FNCI.v7.inventories.updateInventory.update_inventory_item_workflowURL(inventoryId, requestURL, authToken)
-
+    
                             # Update Task with info
                             workflow.update_request.get_update_for_existing_request(v6_projectID, taskId, v6RequestID, requestURL)
                         else:
                             logger.debug("No Inventory Data") 
-
+    
                         
                     else:
                         # This is an existing request so update the task with the latest information
-
+    
                         # Get the v6RequestID from the workflowURL           
                         v6RequestID = workflowURL.split("=")[1].split("&")[0]
-
+    
                         workflow.update_request.get_update_for_existing_request(v6_projectID, taskId, v6RequestID, workflowURL)
                         
                         print("    - Task with ID %s already has a v6 requestId of %s associated with it." %(taskId, v6RequestID))
                         logger.debug("taskId %s already has a requestId %s associated with it." %(taskId, v6RequestID))
-
+    
                 
             else:
                 print("    - There are no tasks for this project")
             
             print("")
             print("###############################################################################")
+            
+        else:
+            # The project is marked as complete
+            print("Project %s has been marked as \"Project Complete\" so not action taken" %projectName)
           
     print("\n")
     print("Script Completed")
