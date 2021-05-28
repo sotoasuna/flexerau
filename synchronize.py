@@ -50,10 +50,8 @@ def main():
     admin_authToken = config.ADMIN_AUTHTOKEN
     v6_authToken = config.v6_AUTHTOKEN
 
-    # Start to cycle through projects in v7 looking for open tasks
-    # For now just the one project we have configured for testing
     print("###############################################################################")
-    
+    # Start to cycle through projects in v7 looking for open tasks
     PROJECTS = FNCI.v7.projects.getProjects.get_project_list(admin_authToken)
     
     # Cycle through each project
@@ -65,7 +63,6 @@ def main():
         projectStatus = "Not Project Complete"
         
         # Only check for tasks/requests if the project is not "complete"
-        
         if projectStatus != "Project Complete":
         
             print("\n") 
@@ -92,16 +89,15 @@ def main():
                 
               
                 # Cycle though the tasks and get the inventory information for each one
-               
                 for taskId in PROJECTTASKDATA:
                     logger.debug("Check inventory for task with id %s" %taskId)
                     inventoryId = PROJECTTASKDATA[taskId][0]
                     logger.debug("    Inventory ID %s" %inventoryId)
                     
-                    
                     # See if there is an existing workflowURL for the inventory item associated to this task
                     workflowURL = FNCI.v7.inventories.getInventoryItemDetails.get_inventory_item_workflowURL_by_id(inventoryId, authToken)
     
+                    # Is there a workflow request already in play?
                     if workflowURL == "N/A":
                         # There is no workflow item so create it
                         # Get the component details from the inventory Item
@@ -154,7 +150,6 @@ def main():
                         
                     else:
                         # This is an existing request so update the task with the latest information
-    
                         # Get the v6RequestID from the workflowURL           
                         v6RequestID = workflowURL.split("=")[1].split("&")[0]
     
