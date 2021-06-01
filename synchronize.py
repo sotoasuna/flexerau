@@ -59,11 +59,10 @@ def main():
         
         projectID = project["id"]
         projectName = project["name"]
-        # Place holder for projectStatus in upcoming release
-        projectStatus = "Not Project Complete"
+        projectStatus = project["status"]
         
         # Only check for tasks/requests if the project is not "complete"
-        if projectStatus != "Project Complete":
+        if projectStatus != "Project Completed":
         
             print("\n") 
             print("Examining project %s for active manual review tasks." %projectName)
@@ -166,8 +165,11 @@ def main():
             print("###############################################################################")
             
         else:
-            # The project is marked as complete
-            print("Project %s has been marked as \"Project Complete\" so not action taken" %projectName)
+            # The project is marked as completed
+            print("\n") 
+            print("Project %s has a status of %s so no action taken" %(projectName, projectStatus))
+            print("")
+            print("###############################################################################")
           
     print("\n")
     print("Script Completed")
