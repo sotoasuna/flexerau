@@ -151,11 +151,11 @@ def main():
                         # This is an existing request so update the task with the latest information
                         # Get the v6RequestID from the workflowURL           
                         v6RequestID = workflowURL.split("=")[1].split("&")[0]
-    
+                        print("    - Task with ID %s already has a v6 requestId of %s associated with it." %(taskId, v6RequestID))
+                        logger.debug("taskId %s already has a requestId %s associated with it." %(taskId, v6RequestID))    
                         workflow.update_request.get_update_for_existing_request(v6_projectID, taskId, v6RequestID, workflowURL)
                         
-                        print("    - Task with ID %s already has a v6 requestId of %s associated with it." %(taskId, v6RequestID))
-                        logger.debug("taskId %s already has a requestId %s associated with it." %(taskId, v6RequestID))
+
     
                 
             else:
