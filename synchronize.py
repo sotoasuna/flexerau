@@ -30,6 +30,8 @@ import FNCI.v7.projects.getProjects
 
 import FNCI.v6.project.getProjectID
 import FNCI.v6.project.copyProjectWithConfiguration
+import FNCI.v6.project.getUserLogin
+import FNCI.v6.project.changeProjectOwner
 import FNCI.v7.users.searchUsers
 import FNCI.v7.inventories.getInventoryItemDetails
 import FNCI.v7.inventories.updateInventory
@@ -60,6 +62,7 @@ def main():
         projectID = project["id"]
         projectName = project["name"]
         projectStatus = project["status"]
+        projectOwner = project["owner"]
         
         # Only check for tasks/requests if the project is not "complete"
         if projectStatus != "Project Completed":
@@ -81,7 +84,12 @@ def main():
                     v6_projectID = FNCI.v6.project.copyProjectWithConfiguration.create_cloned_project(config.v6_teamName, projectName, v6_authToken)
                     print("    - No matching project found in v6.  Creating project %s in v6" %projectName)
                     print("        -- v6 ProjectID is %s" %v6_projectID) 
-    
+
+                    # Get ID in v6 for project Owner of v7 project
+                    emailAddress = FNCI.v7.users.searchUsers.get_user_email_by_login(projectOwner, admin_authToken)
+                    v6_projectOwnerID = FNCI.v6.project.getUserId.get_user_id_from_email(emailAddress, v6_authToken)
+                    FNCI.v6.project.changeProjectOwner.change_project_owner(v6_projectID, v6_projectOwnerID, v6_authToken)
+                    
                 else:
                     print("    - There is a corresponding project of name %s in v6" %projectName)
                     print("        -- v6 ProjectID is %s" %v6_projectID) 
