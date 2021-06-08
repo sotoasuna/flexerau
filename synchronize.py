@@ -97,7 +97,7 @@ def main():
                     workflowURL = FNCI.v7.inventories.getInventoryItemDetails.get_inventory_item_workflowURL_by_id(inventoryId, authToken)
     
                     # Is there a workflow request already in play?
-                    if workflowURL == "N/A":
+                    if workflowURL == "None":
                         # There is no workflow item so create it
                         # Get the component details from the inventory Item
                         INVENTORYDATA = v7_Data.getInventoryData.get_v7_inventory_item_data(inventoryId, authToken)
