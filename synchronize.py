@@ -29,9 +29,7 @@ import config
 import FNCI.v7.projects.getProjects
 
 import FNCI.v6.project.getProjectID
-import FNCI.v6.project.copyProjectWithConfiguration
-import FNCI.v6.project.getUserLogin
-import FNCI.v6.project.changeProjectOwner
+
 import FNCI.v7.users.searchUsers
 import FNCI.v7.inventories.getInventoryItemDetails
 import FNCI.v7.inventories.updateInventory
@@ -40,6 +38,7 @@ import FNCI.v7.inventories.updateInventory
 import v7_Data.getTaskData
 import v7_Data.getInventoryData
 import v6_Data.manage_custom_data
+import v6_Data.create_project
 
 import workflow.create_request
 import workflow.update_request
@@ -81,14 +80,7 @@ def main():
                 
                 if v6_projectID == "No Matching Project Found":
                     # Since there is no project in v6 one needs to be created                   
-                    v6_projectID = FNCI.v6.project.copyProjectWithConfiguration.create_cloned_project(config.v6_teamName, projectName, v6_authToken)
-                    print("    - No matching project found in v6.  Creating project %s in v6" %projectName)
-                    print("        -- v6 ProjectID is %s" %v6_projectID) 
-
-                    # Get ID in v6 for project Owner of v7 project
-                    emailAddress = FNCI.v7.users.searchUsers.get_user_email_by_login(projectOwner, admin_authToken)
-                    v6_projectOwnerID = FNCI.v6.project.getUserId.get_user_id_from_email(emailAddress, v6_authToken)
-                    FNCI.v6.project.changeProjectOwner.change_project_owner(v6_projectID, v6_projectOwnerID, v6_authToken)
+                    v6_projectID = v6_Data.create_project.create_v6_project(projectName, projectOwner)
                     
                 else:
                     print("    - There is a corresponding project of name %s in v6" %projectName)
