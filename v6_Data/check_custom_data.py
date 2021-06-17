@@ -27,7 +27,7 @@ def check_v6_custom_component(INVENTORY_ITEM_DATA):
 
     # INVENTORY_ITEM_DATA contains [componentId, componentVersionId, selectedLicenseId,
     #                                    name, componentName, componentVersionName ]  
-    componentId = INVENTORY_ITEM_DATA[0] 
+    componentId = INVENTORY_ITEM_DATA["componentId"] 
    
     # Get more details about the custom component to find the v6 component ID
     v7_component_details = FNCI.v7.component.getComponent.get_component_information_by_id(componentId, authToken)
