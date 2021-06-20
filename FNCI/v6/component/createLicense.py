@@ -29,7 +29,6 @@ def create_custom_license(licenseDetails, authToken):
     
     try:
         response = requests.post(RESTAPI_URL, data=createCustomLicenseBody, headers=headers)
-        print(response.text)
         logger.debug(json.dumps(response.json(), indent=3))  
         
     except requests.exceptions.RequestException as e:

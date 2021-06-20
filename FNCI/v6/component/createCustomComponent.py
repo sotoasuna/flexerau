@@ -40,11 +40,18 @@ def create_custom_component(component_info, authToken):
     
     # Check the response code and proceed accordingly
     if response.status_code == 200:
-        return True
+        # We created the component so grab the ID to return
+        v6_componentId = response.json()["Id"]
+        return v6_componentId
                 
-    elif response.status_code == 404:
-        print("Error code 404")
-        return False
+    elif response.status_code == 400:
+        # Let's see if it is a duplicate and grab the ID if it is
+        try:
+            v6_componentId = response.json()["Error(s) "]["Id"]
+            return v6_componentId
+       
+        except:
+            return False
     
     elif response.status_code == 500:
         print("Internal Server Error")

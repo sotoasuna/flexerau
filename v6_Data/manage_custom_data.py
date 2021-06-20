@@ -6,10 +6,16 @@ Created on Oct 28, 2019
 
 import logging
 import FNCI.v6.component.associateLicenseToComponent
+import FNCI.v6.component.createCustomComponent
+import FNCI.v6.component.createCustomVersion
+import FNCI.v6.component.createLicense
 
-import v6_Data.check_custom_data
+import FNCI.v7.component.getComponent
+import FNCI.v7.license.lookupLicense
+
 import config
-
+v6_authToken = config.v6_AUTHTOKEN
+v7_authToken = config.AUTHTOKEN
 
 logger = logging.getLogger(__name__)
 
@@ -17,10 +23,6 @@ logger = logging.getLogger(__name__)
 def determine_custom_data(INVENTORYITEMDATA):
     logger.debug("Entering determine_custom_data")
     logger.debug("    INVENTORYITEMDATA: %s" %INVENTORYITEMDATA)
-    
-    
-    # INVENTORYITEMDATA contains [componentId, componentVersionId, selectedLicenseId,
-    #                                    name, componentName, componentVersionName ]  
 
     # What is being requested for use?
     componentId = INVENTORYITEMDATA["componentId"] 
@@ -32,7 +34,15 @@ def determine_custom_data(INVENTORYITEMDATA):
     #---------------------------------------------------------------------------------------#
     # Is it a custom component
     if (componentId > 1000000000):
-        v6_componentId = v6_Data.check_custom_data.check_v6_custom_component(INVENTORYITEMDATA)
+        # If the component that matches the v7 component with the supplied componentId
+        # exists the error will return the component ID and if the component does
+        # not exist it will be created and the component ID will be returned
+        v7_component_details = FNCI.v7.component.getComponent.get_component_information_by_id(componentId, v7_authToken)
+    
+        # The API will return the ID if newly created or if it was already created
+        # it will also return the ID in the error message
+        v6_componentId =  FNCI.v6.component.createCustomComponent.create_custom_component(v7_component_details, v6_authToken)
+
     else:
         # Keep using the component that was provided 
         v6_componentId = componentId
@@ -40,7 +50,12 @@ def determine_custom_data(INVENTORYITEMDATA):
     #---------------------------------------------------------------------------------------#    
     # Is it a custom version
     if (componentVersionId > 1000000000):
-        v6_componentVersionId = v6_Data.check_custom_data.check_v6_custom_version(v6_componentId, componentVersionId, componentVersionName)
+        
+        # If the version of the component that matches the v7 component/version name
+        # exists the error will return the componentVersionId and if the component does
+        # not exist it will be created and the componentVersionId will be returned
+        v6_componentVersionId = FNCI.v6.component.createCustomVersion.create_custom_component_version(v6_componentId, componentVersionName, v6_authToken)
+    
     else:
         # Keep using the version ID that was provided
         v6_componentVersionId = componentVersionId
@@ -48,7 +63,14 @@ def determine_custom_data(INVENTORYITEMDATA):
     #---------------------------------------------------------------------------------------#
     # Is it a custom license   
     if (componentLicenseId > 1000000000):
-        v6_componentLicenseId = v6_Data.check_custom_data.check_v6_custom_license(v6_componentId, v6_componentVersionId, componentLicenseId)
+        # If the license exists the error will return the license ID and if
+        # the license does not exist it will be created and the license ID will be returned
+        # Get license information from v7   
+        v7_license_details = FNCI.v7.license.lookupLicense.lookup_license(componentLicenseId, v7_authToken)
+    
+        # Make REST API call with provided data
+        v6_componentLicenseId = FNCI.v6.component.createLicense.create_custom_license(v7_license_details, v6_authToken)
+
     else:
         # Keep using the license ID that was provided
         v6_componentLicenseId = componentLicenseId
