@@ -13,7 +13,8 @@ AUTHTOKEN = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJvb3duZXIiLCJ1c2VySWQiOjUsImlhdCI6MT
 v6_FNCI_HOST = "workflow.flexnetcodeinsight.com"
 v6_BASEURL = "http://" + v6_FNCI_HOST + ":8888/palamida/api/"
 # Token for Workflow Admin User
-v6_AUTHTOKEN = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ3b3JrZmxvd19hZG1pbiIsImlhdCI6MTU3MzY0MTIzMn0.eJB90KrcUn1OiqnZXBi4Bcv8L7gjZ7w394jT9YvJhpg"
+# This user must own the template project!
+v6_AUTHTOKEN = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ3b3JrZmxvd2FkbWluIiwiaWF0IjoxNTc1OTA2NTU4LCJleHAiOjE1Nzg1MjgwMDB9.cyd6FtjuRrt0qxgLa1uR54_jJQAAtBaChklwXnlazUM"
 v6_teamName = "Engineering"
-v6_projectTemplatename = "WF_Template"
+v6_projectTemplatename = "Workflow Template"  # Must be owned by user with Auth Token above
 
