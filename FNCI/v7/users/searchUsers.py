@@ -38,9 +38,11 @@ def get_user_email_by_id(userID, authToken):
     
     # Check the response code and proceed accordingly
     if response.status_code == 200:
-        logger.debug(response.json()["data"]["email"])
-        return(response.json()["data"]["email"])
-        
+        # Since the script is only looking based on a single ID we can look at the 1st element
+        # in the reponse list each time.
+        logger.debug(response.json()["data"][0]["email"])
+        return(response.json()["data"][0]["email"])
+    
     elif response.status_code == 404:
         print("User with id of %s was not found" %userID)
     
