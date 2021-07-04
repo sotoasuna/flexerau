@@ -37,8 +37,10 @@ import FNCI.v7.inventories.updateInventory
 
 import v7_Data.getTaskData
 import v7_Data.getInventoryData
+import v7_Data.update_guidance_data
 import v6_Data.manage_custom_data
 import v6_Data.create_project
+import v6_Data.get_obligation_data
 
 import workflow.create_request
 import workflow.update_request
@@ -140,7 +142,18 @@ def main():
                             requestURL = "http://" + config.v6_FNCI_HOST + ":8888/palamida/RequestDetails.htm?rid=" + str(v6RequestID) + "&projectId=" + str(v6_projectID) + "&from=requests"
                             
                             FNCI.v7.inventories.updateInventory.update_inventory_item_workflowURL(inventoryId, requestURL, authToken)
-    
+                            
+                            '''
+                            print("    - Updating Usage Guidance for inventory item with ID of %s" %(inventoryId))
+                            # Update v7 Inventory Item with License Obligation Data from v6 
+                            
+                            componentLicenseId = INVENTORYITEMDATA[2]
+                            licenseName, OBLIGATIONDATA = v6_Data.get_obligation_data.get_v6_license_obligation_data(componentLicenseId, v6_authToken)
+                            
+                            v7_Data.update_guidance_data.update_v7_guidance_notes(inventoryId, licenseName, OBLIGATIONDATA, authToken)
+                           '''
+                                                        
+                                                                                    
                             # Update Task with info
                             workflow.update_request.get_update_for_existing_request(v6_projectID, taskId, v6RequestID, requestURL)
                         else:
