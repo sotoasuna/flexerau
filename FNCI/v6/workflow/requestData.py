@@ -22,10 +22,11 @@ def get_current_request_details(requestId, authToken):
     headers = {'Content-Type': 'application/json', 'Authorization': authToken}  
     RESTAPI_URL = WORKFLOW_ENDPOINT_URL  + "?requestIds=" + str(requestId)
     logger.debug("    RESTAPI_URL: %s" %RESTAPI_URL)  
-    response = requests.get(RESTAPI_URL, headers=headers)
+    
              
     try:
-        logger.debug(json.dumps(response.json(), indent=3))  
+        response = requests.get(RESTAPI_URL, headers=headers)
+        #logger.debug(json.dumps(response.json(), indent=3))  
     except ValueError:
         # no JSON returned
         logger.debug(response)
