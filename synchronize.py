@@ -139,7 +139,7 @@ def main():
                             print("    - Task with ID taskId %s now has v6 requestId %s associated with it " %(taskId, v6RequestID))
                             
                             # Update Inventory Item with URL
-                            requestURL = "http://" + config.v6_FNCI_HOST + ":8888/palamida/RequestDetails.htm?rid=" + str(v6RequestID) + "&projectId=" + str(v6_projectID) + "&from=requests"
+                            requestURL = config.v6_REQUESTURL + str(v6RequestID) + "&projectId=" + str(v6_projectID) + "&from=requests"
                             
                             FNCI.v7.inventories.updateInventory.update_inventory_item_workflowURL(inventoryId, requestURL, authToken)
                             
