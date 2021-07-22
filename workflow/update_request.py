@@ -9,6 +9,7 @@ import logging
 import config
 import FNCI.v6.workflow.requestData
 import FNCI.v6.workflow.reviewers
+import FNCI.v7.inventories.createWorkflowDetails
 import FNCI.v7.tasks.updateTask
 import FNCI.v7.tasks.closeTask
 import FNCI.v7.tasks.reassignTask
@@ -16,7 +17,7 @@ import FNCI.v7.tasks.reassignTask
 logger = logging.getLogger(__name__)
 
 #-----------------------------------------------------------------------#
-def get_update_for_existing_request(v6_projectID, taskId, workflow_requestId, requestURL):
+def get_update_for_existing_request(v6_projectID, inventoryId, taskId, workflow_requestId, requestURL):
     logger.debug("Entering get_update_for_existing_request")
     logger.debug("Update the  request for taskId: %s with details from workflow request ID %s" %(taskId, workflow_requestId))
     print("    - Update the request for task with ID %s with details from v6 workflow request %s" %(taskId, workflow_requestId))
@@ -50,6 +51,9 @@ def get_update_for_existing_request(v6_projectID, taskId, workflow_requestId, re
                 logger.debug("Task Update Details: %s" %UPDATEDETAILS)
                  
                 # Provide an update to the task with the data retrieved from the workflow item
+                if config.FNCI_VERSION >= "2020R1":
+                    FNCI.v7.inventories.createWorkflowDetails.update_inventory_workflow_details(inventoryId, UPDATEDETAILS, authToken)
+ 
                 FNCI.v7.tasks.updateTask.update_task(taskId, UPDATEDETAILS, authToken)
                 FNCI.v7.tasks.reassignTask.reassign_task_by_taskID(taskId, username, authToken)
                 

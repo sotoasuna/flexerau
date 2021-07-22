@@ -151,25 +151,19 @@ def main():
                             licenseName, OBLIGATIONDATA = v6_Data.get_obligation_data.get_v6_license_obligation_data(componentLicenseId, v6_authToken)
                             
                             v7_Data.update_guidance_data.update_v7_guidance_notes(inventoryId, licenseName, OBLIGATIONDATA, authToken)
-                           '''
-                                                        
-                                                                                    
+                           '''                                                        
                             # Update Task with info
-                            workflow.update_request.get_update_for_existing_request(v6_projectID, taskId, v6RequestID, requestURL)
+                            workflow.update_request.get_update_for_existing_request(v6_projectID, inventoryId, taskId, v6RequestID, requestURL)
                         else:
                             logger.debug("No Inventory Data") 
     
-                        
                     else:
                         # This is an existing request so update the task with the latest information
                         # Get the v6RequestID from the workflowURL           
                         v6RequestID = workflowURL.split("=")[1].split("&")[0]
                         print("    - Task with ID %s already has a v6 requestId of %s associated with it." %(taskId, v6RequestID))
                         logger.debug("taskId %s already has a requestId %s associated with it." %(taskId, v6RequestID))    
-                        workflow.update_request.get_update_for_existing_request(v6_projectID, taskId, v6RequestID, workflowURL)
-                        
-
-    
+                        workflow.update_request.get_update_for_existing_request(v6_projectID, inventoryId, taskId, v6RequestID, workflowURL)
                 
             else:
                 print("    - There are no tasks for this project")
