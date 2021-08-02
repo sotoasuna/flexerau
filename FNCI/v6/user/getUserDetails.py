@@ -23,7 +23,7 @@ except:
 #######################################################################
 
 FNCI_API = "FNCI v6 Get User Details API"
-ENDPOINT_URL = config.v6_BASEURL + "project/getUserDetails/"
+ENDPOINT_URL = config.v6_BASEURL + "user/getUserDetails/"
 
 #-------------------------------------------------------------------------------------------#
 
