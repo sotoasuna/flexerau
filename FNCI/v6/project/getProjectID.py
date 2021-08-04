@@ -65,14 +65,11 @@ def get_project_id(teamName, projectName, authToken):
 
     
     elif response.status_code == 400:
-        # Bad Request
+        # Bad Request - v6 prject doesn't exist
         logger.error("Response code 400 - %s" %response.text)
-        if FLASKAPP:         
-            abort(400, FNCI_API + " - Bad Request - Look at debug log for more details") 
-        else:
-            print("%s - Error: %s -  Bad Request." %(FNCI_API, response.status_code ))
-            print("    Exiting script")
-            sys.exit()   
+        logger.error("Project does not exist so it needs to be created.")
+        return "No Matching Project Found"
+
 
     elif response.status_code == 401:
         # Unauthorized Access
