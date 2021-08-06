@@ -104,7 +104,7 @@ def main():
                         # Get the component details from the inventory Item
                         INVENTORYDATA = v7_Data.getInventoryData.get_v7_inventory_item_data(inventoryId, authToken)
                         
-                        if len(INVENTORYDATA) > 0:
+                        if INVENTORYDATA != None and len(INVENTORYDATA) > 0:
                             # This was disclosed so create the request
                             # No current mapping so create a new request
                             print("    - No previous mapping for task with ID:  %s" %taskId)
