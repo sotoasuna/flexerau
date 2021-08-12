@@ -113,7 +113,7 @@ def get_inventory_item_information_by_id(inventoryID, authToken):
     logger.debug("Entering get_inventory_item_information_by_id with inventoryID %s" %inventoryID)
 
     headers = {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + authToken}  
-    RESTAPI_URL = ENDPOINT_URL +  "/" + str(inventoryID)
+    RESTAPI_URL = ENDPOINT_URL + str(inventoryID)
     logger.debug("    RESTAPI_URL: %s" %RESTAPI_URL)  
        
     try:
