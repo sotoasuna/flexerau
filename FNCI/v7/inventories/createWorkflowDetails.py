@@ -41,23 +41,23 @@ def update_inventory_workflow_details(inventoryId, UPDATEDETAILS, authToken):
         [
             {
                 "key": "Request URL",
-                "value": "''' + UPDATEDETAILS[0] + '''"
+                "value": "''' + str(UPDATEDETAILS[0]) + '''"
             },                 
             {
                 "key": "Workflow Request ID",
-                "value": "''' + UPDATEDETAILS[1] + '''"
+                "value": "''' + str(UPDATEDETAILS[1]) + '''"
             },            
             {
                 "key": "Last Activity",
-                "value": "''' + UPDATEDETAILS[2] + '''"
+                "value": "''' + str(UPDATEDETAILS[2]) + '''"
             },
             {
                 "key": "Current Review Level",
-                "value": "''' + UPDATEDETAILS[3] + '''"
+                "value": "''' + str(UPDATEDETAILS[3]) + '''"
             },
             {
                 "key": "Current Assignee",
-                "value": "''' + UPDATEDETAILS[4] + '''"
+                "value": "''' + str(UPDATEDETAILS[4]) + '''"
             }
         ]
     '''

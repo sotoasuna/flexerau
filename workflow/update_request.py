@@ -66,6 +66,11 @@ def get_update_for_existing_request(v6_projectID, inventoryId, taskId, workflow_
                 
                 # Update task contents as well with approval date and message
                 UPDATEDETAILS = [requestURL, workflow_requestId, reviewStatus + " at " + updateDate, "None", "None"]
+
+                # Provide an update to the task with the data retrieved from the workflow item
+                if config.FNCI_VERSION >= "2020R1":
+                    FNCI.v7.inventories.createWorkflowDetails.update_inventory_workflow_details(inventoryId, UPDATEDETAILS, authToken)
+
                 # Provide an update to the task with the data retrieved from the workflow item
                 FNCI.v7.tasks.updateTask.update_task(taskId, UPDATEDETAILS, authToken)
                 FNCI.v7.tasks.closeTask.close_task_by_projectID(taskId, reviewStatus, authToken)
@@ -77,6 +82,10 @@ def get_update_for_existing_request(v6_projectID, inventoryId, taskId, workflow_
             print("        -- Request %s is currently in a draft state" %workflow_requestId)  
             # Update task contents as well with approval date and message
             UPDATEDETAILS = [requestURL, workflow_requestId, "N/A", "Request currently in Draft state", "N/A"]
+
+            # Provide an update to the task with the data retrieved from the workflow item
+            if config.FNCI_VERSION >= "2020R1":
+                FNCI.v7.inventories.createWorkflowDetails.update_inventory_workflow_details(inventoryId, UPDATEDETAILS, authToken)
             # Provide an update to the task with the data retrieved from the workflow item
             FNCI.v7.tasks.updateTask.update_task(taskId, UPDATEDETAILS, authToken)   
 
