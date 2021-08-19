@@ -1,4 +1,8 @@
 '''
+Copyright 2020 Flexera Software LLC
+See LICENSE.TXT for full license text
+SPDX-License-Identifier: MIT
+
 Created on Oct 23, 2019
 
 @author: SGeary
