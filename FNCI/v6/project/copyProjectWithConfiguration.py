@@ -10,7 +10,6 @@ Created on Sep 21, 2019
 import logging
 import requests
 import sys
-from flask import abort
 import config
 
 logger = logging.getLogger(__name__)
@@ -23,6 +22,9 @@ try:
     FLASKAPP = config.FLASKAPP
 except:
     FLASKAPP = False
+
+if FLASKAPP:
+    from flask import abort
 #######################################################################
 
 FNCI_API = "FNCI v6 Copy Project with Configuration API"

@@ -49,6 +49,8 @@ def get_update_for_existing_request(v6_projectID, inventoryId, taskId, workflow_
                 username, currentReviewer = FNCI.v6.workflow.reviewers.get_current_reviewer(workflow_requestId, v6_authToken)
                 
                 UPDATEDETAILS = [requestURL, workflow_requestId, updateDate, currentReviewLevelName, currentReviewer]
+
+                #UPDATEDETAILSDICT = {"Request URL": requestURL, workflow_requestId, updateDate, currentReviewLevelName, currentReviewer]
                 
                 print("        -- Updating v7 task id %s with latest request status of request Id %s" %(taskId, workflow_requestId))
                 print("            --- Currently waiting for review by %s" %currentReviewer)

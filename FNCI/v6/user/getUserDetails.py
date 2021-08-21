@@ -7,11 +7,9 @@ Created on Nov 25, 2019
 
 @author: SGeary
 '''
-
 import logging
 import requests
 import sys
-from flask import abort
 import config
 
 logger = logging.getLogger(__name__)
@@ -24,6 +22,9 @@ try:
     FLASKAPP = config.FLASKAPP
 except:
     FLASKAPP = False
+
+if FLASKAPP:
+    from flask import abort
 #######################################################################
 
 FNCI_API = "FNCI v6 Get User Details API"
