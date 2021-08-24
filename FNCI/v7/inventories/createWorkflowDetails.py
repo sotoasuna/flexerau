@@ -40,27 +40,17 @@ def update_inventory_workflow_details(inventoryId, UPDATEDETAILS, authToken):
     headers = {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + authToken} 
 
     updateBody = '''
-        [
-            {
-                "key": "Request URL",
-                "value": "''' + str(UPDATEDETAILS[0]) + '''"
-            },                 
-            {
-                "key": "Workflow Request ID",
-                "value": "''' + str(UPDATEDETAILS[1]) + '''"
-            },            
-            {
-                "key": "Last Activity",
-                "value": "''' + str(UPDATEDETAILS[2]) + '''"
-            },
-            {
-                "key": "Current Review Level",
-                "value": "''' + str(UPDATEDETAILS[3]) + '''"
-            },
-            {
-                "key": "Current Assignee",
-                "value": "''' + str(UPDATEDETAILS[4]) + '''"
-            }
+        ['''
+
+    for key in UPDATEDETAILS:
+        updateBody += '''
+        {
+            "key": "''' + key + '''",
+            "value": "''' + str(UPDATEDETAILS[key]) + '''"
+        },'''                 
+
+    updateBody = updateBody[:-1]  # Remove last comma 
+    updateBody +='''
         ]
     '''
        
