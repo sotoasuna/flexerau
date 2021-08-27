@@ -38,9 +38,9 @@ def update_task(taskId, UPDATEINFORMATION, authToken):
     
     RESTAPI_URL = ENDPOINT_URL  + str(taskId)   
     logger.debug("    RESTAPI_URL: %s" %RESTAPI_URL)  
-    
-    taskUpdateBody = get_taskUpdateBody(UPDATEINFORMATION) 
-             
+
+    taskUpdateBody = get_taskUpdateBody(UPDATEINFORMATION)
+ 
     #  Make the request to get the required data   
     try:
         response = requests.put(RESTAPI_URL, data=taskUpdateBody, headers=headers)
@@ -122,25 +122,14 @@ def update_task(taskId, UPDATEINFORMATION, authToken):
 #--------------------------------------------------------# 
 def get_taskUpdateBody(UPDATEINFORMATION): 
     
+    updateBody = ""
 
-    
-    requestURL = UPDATEINFORMATION[0]
-    workflow_requestId = UPDATEINFORMATION[1] 
-    updateDate = UPDATEINFORMATION[2] 
-    currentReviewLevelName = UPDATEINFORMATION[3]
-    currentAssigneeName = UPDATEINFORMATION[4] 
-      
-    requestURLText = "Request URL: " + requestURL + "<br>"
-    currentRequestIdText = "RequestID: " + str(workflow_requestId) + "<br>"
-    lastUpdateText = "Last Activity: " + updateDate + "<br>"
-    currentReviewLevelText = "Current Review Level:  " + currentReviewLevelName + "<br>"
-    currentAssigneeText = "Current Assignee:  " + currentAssigneeName
-    
-    updateText = requestURLText + currentRequestIdText + lastUpdateText + currentReviewLevelText + currentAssigneeText
-    
+    for key in UPDATEINFORMATION:
+        updateBody += key + ''':  ''' +  str(UPDATEINFORMATION[key]) + '''<br>'''
 
     taskUpdateBody = '''{ 
-        "details": "''' + updateText + '''"
+        "details": "''' + updateBody + '''"
     } '''
-        
-    return taskUpdateBody  
+
+
+    return taskUpdateBody

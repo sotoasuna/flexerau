@@ -47,14 +47,12 @@ def get_update_for_existing_request(v6_projectID, inventoryId, taskId, workflow_
                 
                 # Get full details for the reviewer of the current request
                 username, currentReviewer = FNCI.v6.workflow.reviewers.get_current_reviewer(workflow_requestId, v6_authToken)
-                
-                UPDATEDETAILS = [requestURL, workflow_requestId, updateDate, currentReviewLevelName, currentReviewer]
 
-                UPDATEDETAILSDICT = {"Request URL": requestURL}
-                UPDATEDETAILSDICT.update({"Workflow Request ID": workflow_requestId})
-                UPDATEDETAILSDICT.update({"Last Activity": updateDate})
-                UPDATEDETAILSDICT.update({"Current Review Level": currentReviewLevelName})
-                UPDATEDETAILSDICT.update({"Current Reviewer": currentReviewer})
+                UPDATEDETAILS = {"Request URL": requestURL}
+                UPDATEDETAILS.update({"Workflow Request ID": workflow_requestId})
+                UPDATEDETAILS.update({"Last Activity": updateDate})
+                UPDATEDETAILS.update({"Current Review Level": currentReviewLevelName})
+                UPDATEDETAILS.update({"Current Reviewer": currentReviewer})
 
                 print("        -- Updating v7 task id %s with latest request status of request Id %s" %(taskId, workflow_requestId))
                 print("            --- Currently waiting for review by %s" %currentReviewer)
@@ -62,7 +60,7 @@ def get_update_for_existing_request(v6_projectID, inventoryId, taskId, workflow_
                  
                 # Provide an update to the task with the data retrieved from the workflow item
                 if config.FNCI_VERSION >= "2020R1":
-                    FNCI.v7.inventories.createWorkflowDetails.update_inventory_workflow_details(inventoryId, UPDATEDETAILSDICT, authToken)
+                    FNCI.v7.inventories.createWorkflowDetails.update_inventory_workflow_details(inventoryId, UPDATEDETAILS, authToken)
  
                 FNCI.v7.tasks.updateTask.update_task(taskId, UPDATEDETAILS, authToken)
                 FNCI.v7.tasks.reassignTask.reassign_task_by_taskID(taskId, username, authToken)
@@ -75,15 +73,13 @@ def get_update_for_existing_request(v6_projectID, inventoryId, taskId, workflow_
                 updateDate = detail["updateDate"]
                 
                 # Update task contents as well with approval date and message
-                UPDATEDETAILS = [requestURL, workflow_requestId, reviewStatus + " at " + updateDate, "None", "None"]
-
-                UPDATEDETAILSDICT = {"Request URL": requestURL}
-                UPDATEDETAILSDICT.update({"Workflow Request ID": workflow_requestId})
-                UPDATEDETAILSDICT.update({"Request Resolution ": reviewStatus + " at " + updateDate})
+                UPDATEDETAILS = {"Request URL": requestURL}
+                UPDATEDETAILS.update({"Workflow Request ID": workflow_requestId})
+                UPDATEDETAILS.update({"Request Resolution ": reviewStatus + " at " + updateDate})
 
                 # Provide an update to the task with the data retrieved from the workflow item
                 if config.FNCI_VERSION >= "2020R1":
-                    FNCI.v7.inventories.createWorkflowDetails.update_inventory_workflow_details(inventoryId, UPDATEDETAILSDICT, authToken)
+                    FNCI.v7.inventories.createWorkflowDetails.update_inventory_workflow_details(inventoryId, UPDATEDETAILS, authToken)
 
                 # Provide an update to the task with the data retrieved from the workflow item
                 FNCI.v7.tasks.updateTask.update_task(taskId, UPDATEDETAILS, authToken)
@@ -95,15 +91,13 @@ def get_update_for_existing_request(v6_projectID, inventoryId, taskId, workflow_
             logger.debug("Request %s is still in a draft state" %workflow_requestId)
             print("        -- Request %s is currently in a draft state" %workflow_requestId)  
             # Update task contents as well with approval date and message
-            UPDATEDETAILS = [requestURL, workflow_requestId, "N/A", "Request currently in Draft state", "N/A"]
-
-            UPDATEDETAILSDICT = {"Request URL": requestURL}
-            UPDATEDETAILSDICT.update({"Workflow Request ID": workflow_requestId})
-            UPDATEDETAILSDICT.update({"Current Review Level": "Request currently unsubmitted and in a draft state."})
+            UPDATEDETAILS = {"Request URL": requestURL}
+            UPDATEDETAILS.update({"Workflow Request ID": workflow_requestId})
+            UPDATEDETAILS.update({"Current Review Level": "Request currently unsubmitted and in a draft state."})
 
             # Provide an update to the task with the data retrieved from the workflow item
             if config.FNCI_VERSION >= "2020R1":
-                FNCI.v7.inventories.createWorkflowDetails.update_inventory_workflow_details(inventoryId, UPDATEDETAILSDICT, authToken)
+                FNCI.v7.inventories.createWorkflowDetails.update_inventory_workflow_details(inventoryId, UPDATEDETAILS, authToken)
             # Provide an update to the task with the data retrieved from the workflow item
             FNCI.v7.tasks.updateTask.update_task(taskId, UPDATEDETAILS, authToken)   
 
