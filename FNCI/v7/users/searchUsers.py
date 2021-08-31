@@ -33,12 +33,27 @@ ENDPOINT_URL = config.BASEURL + "users/search"
 #-----------------------------------------------------------------------#
 def get_user_email_by_id(userID, authToken):
     logger.debug("Entering get_user_email_by_id with userID %s" %userID)
+
+    RESTAPI_URL = ENDPOINT_URL + "?id=" + str(userID)
+    userDetails = get_user(RESTAPI_URL, authToken)
+    return userDetails
+
     
-    
+#-----------------------------------------------------------------------#
+def get_user_email_by_login(login, authToken):
+    logger.debug("Entering get_user_email_by_login with login %s" %login)
+
+    RESTAPI_URL = ENDPOINT_URL + "?login=" + login 
+    userDetails = get_user(RESTAPI_URL, authToken)
+    return userDetails
+
+#-----------------------------------------------------------------------#
+def get_user(RESTAPI_URL, authToken):
+    logger.debug("Entering get_user")
+    logger.debug("    RESTAPI_URL: %s" %RESTAPI_URL) 
+
     headers = {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + authToken}  
-    RESTAPI_URL = ENDPOINT_URL + "?id=" + str(userID) 
-    logger.debug("    RESTAPI_URL: %s" %RESTAPI_URL)  
-       
+
     try:
         response = requests.get(RESTAPI_URL, headers=headers)
         response.raise_for_status()
@@ -114,90 +129,3 @@ def get_user_email_by_id(userID, authToken):
             print("    %s - Error: %s -  Internal Server Error." %(FNCI_API, response.status_code ))
             print("    Exiting script")
             sys.exit()  
-
-#-----------------------------------------------------------------------#
-def get_user_email_by_login(login, authToken):
-    logger.debug("Entering get_user_email_by_login with login %s" %login)
-    
-    
-    headers = {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + authToken}  
-    RESTAPI_URL = ENDPOINT_URL + "?login=" + login 
-    logger.debug("    RESTAPI_URL: %s" %RESTAPI_URL)  
-
-    try:
-        response = requests.get(RESTAPI_URL, headers=headers)
-        response.raise_for_status()
-    except requests.exceptions.ConnectionError:
-        # Connection Error - Is the server up and running?
-        abort_message = FNCI_API + " - Error Connecting to FNCI Server - " +  (ENDPOINT_URL).split("codeinsight")[0] # Get rid of everything after codeinsight in url
-        logger.error("    %s" %(abort_message))
-
-        if FLASKAPP:         
-            # Using error code 500 (Internal Server Error) to cover connection errors
-            # in the flask apps
-            abort(500, FNCI_API + " - %s" %abort_message) 
-        else:
-            print(abort_message)
-            print("Is the FNCI server running?")
-            print("Exiting script")
-            sys.exit() 
-    except requests.exceptions.RequestException as e: # Catch the exception for the logs but process below
-        logger.error(e)
-    
-    # We at least received a response from FNCI so check the status to see
-    # what happened if there was an error or the expected data
-    if response.status_code == 200:
-        logger.debug("    Call to %s was successful." %FNCI_API)
-        return(response.json()["data"]["email"])
-    
-    elif response.status_code == 400:
-        # Bad Request
-        logger.error("    %s - Error: %s -  Bad Request." %(FNCI_API, response.status_code ))
-        if FLASKAPP:         
-            abort(400, FNCI_API + " - Bad Request - Look at debug log for more details") 
-        else:
-            print("%s - Error: %s -  Bad Request." %(FNCI_API, response.status_code ))
-            print("    Exiting script")
-            sys.exit()   
-
-    elif response.status_code == 401:
-        # Unauthorized Access
-        logger.error("    %s - Error: %s -  Authentication Failed: JWT token is not valid or user does not have correct permissions." %(FNCI_API, response.status_code ))
-        if FLASKAPP:         
-            abort(401, FNCI_API + " - Authentication Failed: JWT token is not valid or user does not have correct permissions.")
-        else:
-            print("%s - Error: %s -  Authentication Failed: JWT token is not valid or user does not have correct permissions." %(FNCI_API, response.status_code ))
-            print("    Exiting script")
-            sys.exit()   
-
-    elif response.status_code == 404:
-        # Not Found
-        logger.error("    %s - Error: %s -  URL endpoint not found:  %s" %(FNCI_API, response.status_code,  RESTAPI_URL ))
-        if FLASKAPP:         
-            abort(400, FNCI_API + " - Bad Request - URL endpoint not found") 
-        else:
-            print("    %s - Error: %s -  URL endpoint not found:  %s" %(FNCI_API, response.status_code,  RESTAPI_URL ))
-            print("    Exiting script")
-            sys.exit()   
-
-    elif response.status_code == 405:
-        # Method Not Allowed
-        logger.error("    %s - Error: %s -  Method (GET/POST/PUT//DELETE/ETC) Not Allowed." %(FNCI_API, response.status_code ))
-        if FLASKAPP:         
-            abort(405, FNCI_API + " - Method Not Allowed.")
-        else:
-            print("    %s - Error: %s -  Method (GET/POST/PUT//DELETE/ETC) Not Allowed." %(FNCI_API, response.status_code ))
-            print("    Exiting script")
-            sys.exit()  
-        
-    elif response.status_code == 500:
-        # Internal Server Error
-        logger.error("    %s - Error: %s -  Internal Server Error." %(FNCI_API, response.status_code ))
-        if FLASKAPP:         
-            abort(500, FNCI_API + " - Internal Server Error.")
-        else:
-            print("    %s - Error: %s -  Internal Server Error." %(FNCI_API, response.status_code ))
-            print("    Exiting script")
-            sys.exit()  
-
-
