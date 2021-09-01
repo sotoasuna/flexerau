@@ -46,16 +46,24 @@ def get_update_for_existing_request(v6_projectID, inventoryId, taskId, workflow_
                 currentReviewLevelName = detail["projectLevelDefinition"]["name"]
                 
                 # Get full details for the reviewer of the current request
-                username, currentReviewer = FNCI.v6.workflow.reviewers.get_current_reviewer(workflow_requestId, v6_authToken)
+                reviewerList =  FNCI.v6.workflow.reviewers.get_current_reviewer(workflow_requestId, v6_authToken)
 
+                # There is only one active reviewer so get details from response
+                login = reviewerList[0]["login"]
+                firstName = reviewerList[0]["firstName"]
+                lastName = reviewerList[0]["lastName"]
+                email = reviewerList[0]["email"]
+
+                # Create the details dictionary for the task view and the inventory workflow details display
                 UPDATEDETAILS = {"Request URL": requestURL}
                 UPDATEDETAILS.update({"Workflow Request ID": workflow_requestId})
                 UPDATEDETAILS.update({"Last Activity": updateDate})
                 UPDATEDETAILS.update({"Current Review Level": currentReviewLevelName})
-                UPDATEDETAILS.update({"Current Reviewer": currentReviewer})
+                UPDATEDETAILS.update({"Current Reviewer Name": firstName + " " + lastName})
+                UPDATEDETAILS.update({"Current Reviewer eMail": email})
 
                 print("        -- Updating v7 task id %s with latest request status of request Id %s" %(taskId, workflow_requestId))
-                print("            --- Currently waiting for review by %s" %currentReviewer)
+                print("            --- Currently waiting for review by %s %s" %(firstName, lastName))
                 logger.debug("Task Update Details: %s" %UPDATEDETAILS)
                  
                 # Provide an update to the task with the data retrieved from the workflow item
@@ -63,7 +71,7 @@ def get_update_for_existing_request(v6_projectID, inventoryId, taskId, workflow_
                     FNCI.v7.inventories.createWorkflowDetails.update_inventory_workflow_details(inventoryId, UPDATEDETAILS, authToken)
  
                 FNCI.v7.tasks.updateTask.update_task(taskId, UPDATEDETAILS, authToken)
-                FNCI.v7.tasks.reassignTask.reassign_task_by_taskID(taskId, username, authToken)
+                FNCI.v7.tasks.reassignTask.reassign_task_by_taskID(taskId, login, authToken)
                 
       
             else:

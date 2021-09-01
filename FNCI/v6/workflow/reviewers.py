@@ -64,15 +64,8 @@ def get_current_reviewer(requestId, authToken):
     # what happened if there was an error or the expected data
     if response.status_code == 200:
         logger.debug("    Call to %s was successful." %FNCI_API)
-        for contact in response.json()["Content"]:            
-            firstName = contact["firstName"]
-            lastName = contact["lastName"]
-            email = contact["email"]
-            username = contact["login"]
-        
-        currentReviewer = "%s %s (%s)" %(firstName, lastName, email)            
-        return username, currentReviewer
-    
+        return response.json()["Content"]           
+
     elif response.status_code == 400:
         # Bad Request
         logger.error("Response code 400 - %s" %response.text)
