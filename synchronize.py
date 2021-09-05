@@ -68,6 +68,8 @@ def main():
         projectName = project["name"]
         projectStatus = project["status"]
         projectOwner = project["owner"]
+
+        v6ProjectName = projectName + " (" + str(projectID) + ")"
         
         # Only check for tasks/requests if the project is not "complete"
         if projectStatus != "Project Completed":
@@ -82,14 +84,14 @@ def main():
             if PROJECTTASKDATA:
                 print("    - There are %s active manual review tasks for this project" %(len(PROJECTTASKDATA)))
                 # See if there is a matching v6 project
-                v6_projectID = FNCI.v6.project.getProjectID.get_project_id(config.v6_teamName, projectName, v6_authToken)
+                v6_projectID = FNCI.v6.project.getProjectID.get_project_id(config.v6_teamName, v6ProjectName, v6_authToken)
                 
                 if v6_projectID == "No Matching Project Found":
                     # Since there is no project in v6 one needs to be created                   
-                    v6_projectID = v6_Data.create_project.create_v6_project(projectName, projectOwner)
+                    v6_projectID = v6_Data.create_project.create_v6_project(v6ProjectName, projectOwner)
                     
                 else:
-                    print("    - There is a corresponding project of name %s in v6" %projectName)
+                    print("    - There is a corresponding project of name %s in v6" %v6ProjectName)
                     print("        -- v6 ProjectID is %s" %v6_projectID) 
                 
               
