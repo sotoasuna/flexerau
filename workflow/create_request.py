@@ -12,6 +12,8 @@ import logging
 
 import config
 import FNCI.v6.project.getUserId
+import FNCI.v6.component.associateLicenseToComponent
+import FNCI.v6.component.associateLicenseToComponentVersion
 import FNCI.v6.workflow.createRequest
 
 
@@ -41,7 +43,18 @@ def create_new_request(v6_projectID, taskId, projectOwnerEmail, requesterEmail, 
     
     # Create request in v6
     requestId = FNCI.v6.workflow.createRequest.create_workflow_request(REQUESTDETAILS, v6_authToken)
-  
+
+    # Was the previous request successful?
+    if requestId == "unassociated license":
+        logger.debug("    Associate license %s with component: %s" %(selectedLicenseId, componentId))
+        FNCI.v6.component.associateLicenseToComponent.associate_license_to_component(componentId, selectedLicenseId, v6_authToken)
+        logger.debug("    Associate license %s with componentVersion: %s" %(selectedLicenseId, componentVersionId))
+        FNCI.v6.component.associateLicenseToComponentVersion.associate_license_to_component_version(componentVersionId, selectedLicenseId, v6_authToken)
+
+        # Now make the request again that the license is ensured to be associated to both component and componentVesion
+        requestId = FNCI.v6.workflow.createRequest.create_workflow_request(REQUESTDETAILS, v6_authToken)
+
+          
     return requestId
     
     

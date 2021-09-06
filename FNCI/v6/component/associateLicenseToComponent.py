@@ -70,12 +70,21 @@ def associate_license_to_component(componentID, componentLicenseId, authToken):
     elif response.status_code == 400:
         # Bad Request
         logger.error("Response code 400 - %s" %response.text)
-        if FLASKAPP:         
-            abort(400, FNCI_API + " - Bad Request - Look at debug log for more details") 
+
+        # See if the issue is due to an unassociated license
+        # in version 6.  If so return that fact for the 
+        # calling script to process
+        if "License Already Associated" in response.json()["Error(s) "]:
+            logger.debug("    -  License Already Associated to Component")
+            return True
         else:
-            print("%s - Error: %s -  Bad Request." %(FNCI_API, response.status_code ))
-            print("    Exiting script")
-            sys.exit()   
+            # There is something else happening so catch it
+            if FLASKAPP:         
+                abort(400, FNCI_API + " - Bad Request - Look at debug log for more details") 
+            else:
+                print("%s - Error: %s -  Bad Request." %(FNCI_API, response.status_code ))
+                print("    Exiting script")
+                sys.exit()   
 
     elif response.status_code == 401:
         # Unauthorized Access
