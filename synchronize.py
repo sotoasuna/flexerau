@@ -188,5 +188,19 @@ def main():
     print("Script Completed")
      
 if __name__ == "__main__":
+
+    if int(config.FNCI_PORT) > 65535:
+        print("The port specified for FNCI v7 (%s) is greater than 65535." %config.FNCI_PORT)
+        print("Please update config.py with correct port for FNCI_PORT")
+        print("Exiting Script")
+        sys.exit()
+
+    if int(config.v6_FNCI_PORT) > 65535:
+        print("The port specified for FNCI v6 (%s) is greater than 65535." %config.v6_FNCI_PORT)
+        print("Please update config.py with correct port for v6_FNCI_PORT")
+        print("Exiting Script")
+        sys.exit()
+
+
     main() 
     
