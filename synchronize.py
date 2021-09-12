@@ -59,7 +59,9 @@ def main():
 
     print("###############################################################################")
     # Start to cycle through projects in v7 looking for open tasks
-    PROJECTS = FNCI.v7.projects.getProjects.get_project_list(admin_authToken)
+    #PROJECTS = FNCI.v7.projects.getProjects.get_project_list(admin_authToken)
+
+    PROJECTS = [{"id":"144", "name": "v6 Workflow", "status": "Analysis In Progress", "owner": "oowner"}]
     
     # Cycle through each project
     for project in PROJECTS:
@@ -75,14 +77,14 @@ def main():
         if projectStatus != "Project Completed":
         
             print("\n") 
-            print("Examining project %s for active manual review tasks." %projectName)
+            print("Examining project %s for active manual review tasks." %projectName, flush=True)
                         
             # Get project Tasks and the inventory item they are associated with
             PROJECTTASKDATA = v7_Data.getTaskData.get_v7_task_data(projectID)
     
             # see if there are any tasks to worry about
             if PROJECTTASKDATA:
-                print("    - There are %s active manual review tasks for this project" %(len(PROJECTTASKDATA)))
+                print("    - There are %s active manual review tasks for this project" %(len(PROJECTTASKDATA)), flush=True)
                 # See if there is a matching v6 project
                 v6_projectID = FNCI.v6.project.getProjectID.get_project_id(config.v6_teamName, v6ProjectName, v6_authToken)
                 
@@ -91,8 +93,8 @@ def main():
                     v6_projectID = v6_Data.create_project.create_v6_project(v6ProjectName, projectOwner)
                     
                 else:
-                    print("    - There is a corresponding project of name %s in v6" %v6ProjectName)
-                    print("        -- v6 ProjectID is %s" %v6_projectID) 
+                    print("    - There is a corresponding project of name %s in v6" %v6ProjectName, flush=True)
+                    print("        -- v6 ProjectID is %s" %v6_projectID, flush=True)
                 
               
                 # Cycle though the tasks and get the inventory information for each one
@@ -113,7 +115,7 @@ def main():
                         if INVENTORYDATA != None and len(INVENTORYDATA) > 0:
                             # This was disclosed so create the request
                             # No current mapping so create a new request
-                            print("    - No previous mapping for task with ID:  %s" %taskId)
+                            print("    - No previous mapping for task with ID:  %s" %taskId, flush=True)
                             
                             # What is being requested for use?
                             componentId = INVENTORYDATA["componentId"] 
@@ -142,7 +144,7 @@ def main():
                             logger.debug("Requester eMail Address is %s" %requesterEmail)              
                             
                             v6RequestID = workflow.create_request.create_new_request(v6_projectID, taskId, projectOwnerEmail, requesterEmail, INVENTORYITEMDATA)
-                            print("    - Task with ID taskId %s now has v6 requestId %s associated with it " %(taskId, v6RequestID))
+                            print("    - Task with ID taskId %s now has v6 requestId %s associated with it " %(taskId, v6RequestID), flush=True)
                             
                             # Update Inventory Item with URL
                             requestURL = config.v6_REQUESTURL + str(v6RequestID) + "&projectId=" + str(v6_projectID) + "&from=requests"
@@ -167,12 +169,12 @@ def main():
                         # This is an existing request so update the task with the latest information
                         # Get the v6RequestID from the workflowURL           
                         v6RequestID = workflowURL.split("=")[1].split("&")[0]
-                        print("    - Task with ID %s already has a v6 requestId of %s associated with it." %(taskId, v6RequestID))
+                        print("    - Task with ID %s already has a v6 requestId of %s associated with it." %(taskId, v6RequestID), flush=True)
                         logger.debug("taskId %s already has a requestId %s associated with it." %(taskId, v6RequestID))    
                         workflow.update_request.get_update_for_existing_request(v6_projectID, inventoryId, taskId, v6RequestID, workflowURL)
                 
             else:
-                print("    - There are no tasks for this project")
+                print("    - There are no tasks for this project", flush=True)
             
             print("")
             print("###############################################################################")
