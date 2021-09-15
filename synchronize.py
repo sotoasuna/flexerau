@@ -59,9 +59,7 @@ def main():
 
     print("###############################################################################")
     # Start to cycle through projects in v7 looking for open tasks
-    #PROJECTS = FNCI.v7.projects.getProjects.get_project_list(admin_authToken)
-
-    PROJECTS = [{"id":"144", "name": "v6 Workflow", "status": "Analysis In Progress", "owner": "oowner"}]
+    PROJECTS = FNCI.v7.projects.getProjects.get_project_list(admin_authToken)
     
     # Cycle through each project
     for project in PROJECTS:
